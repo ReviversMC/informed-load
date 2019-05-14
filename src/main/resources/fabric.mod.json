@@ -10,7 +10,8 @@
   ],
   "contact": {
     "homepage": "https://minecraft.curseforge.com/projects/informed-load-fabric",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/Indi-Code/Informed-Load-Minecraft-Fabric-",
+    "issues": "https://github.com/Indi-Code/Informed-Load-Minecraft-Fabric-/issues"
   },
   "custom": {
     "modmenu:clientsideOnly": true
