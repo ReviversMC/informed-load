@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "informedload",
+  "version": "${version}",
+
+  "name": "Informed Load",
+  "description": "Tells you what's actually going on while Minecraft is loading!",
+  "authors": [
+    "Indigo A."
+  ],
+  "contact": {
+    "homepage": "https://minecraft.curseforge.com/projects/informed-load-fabric",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "custom": {
+    "modmenu:clientsideOnly": true
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/informedload/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "modmenu": [
+      "com.indigoa.minecraft.fabric.informedload.ModMenuIntegration"
+    ],
+    "main": [
+      "com.indigoa.minecraft.fabric.informedload.InformedLoad"
+    ]
+  },
+
+  "requires": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*",
+    "fabric-language-kotlin": ">=1.3.30"
+  },
+  "suggests": {
+    "flamingo": "*"
+  },
+  "mixins": [
+    "informedload.mixins.json"
+  ]
+}

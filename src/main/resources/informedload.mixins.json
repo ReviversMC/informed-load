@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "package": "com.indigoa.minecraft.fabric.informedload.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+
+  ],
+  "client": [
+    "SplashMixin",
+    "ResourceReloadHandlerMixin",
+    "MinecraftClientMixin",
+    "MixinModelLoader",
+    "SpriteAtlasTextureMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
