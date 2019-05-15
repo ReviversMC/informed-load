@@ -21,10 +21,6 @@ import static net.minecraft.client.gui.DrawableHelper.fill;
  */
 public class InformedLoad implements ModInitializer {
     public static final String MODID = "informedload";
-    public static Set<ResourceReloadListener> loadListeners = null;
-    public static float current = 0;
-    public static float max = 0;
-    public static boolean fontManagerNotLoaded = false;
     public static TextRenderer textRenderer;
     public static final String FONT_JSON = //Taken from loadingspice (https://github.com/therealfarfetchd/loadingspice)
             "{\n" +
