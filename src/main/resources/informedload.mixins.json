@@ -7,8 +7,6 @@
   ],
   "client": [
     "SplashMixin",
-    "ResourceReloadHandlerMixin",
-    "MinecraftClientMixin",
     "MixinModelLoader",
     "SpriteAtlasTextureMixin"
   ],

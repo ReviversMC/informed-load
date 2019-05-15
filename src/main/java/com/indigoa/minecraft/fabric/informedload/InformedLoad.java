@@ -2,16 +2,12 @@ package com.indigoa.minecraft.fabric.informedload;
 
 
 import me.sargunvohra.mcmods.autoconfig1.AutoConfig;
-import me.sargunvohra.mcmods.autoconfig1.serializer.GsonConfigSerializer;
-import me.sargunvohra.mcmods.autoconfig1.serializer.JanksonConfigSerializer;
 import me.sargunvohra.mcmods.autoconfig1.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.resource.ResourceReloadListener;
 import net.minecraft.util.math.MathHelper;
 
 import java.awt.*;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import static net.minecraft.client.gui.DrawableHelper.fill;

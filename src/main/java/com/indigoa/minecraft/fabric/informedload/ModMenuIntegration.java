@@ -1,7 +1,5 @@
 package com.indigoa.minecraft.fabric.informedload;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Supplier;
 import io.github.prospector.modmenu.api.ModMenuApi;
 import me.sargunvohra.mcmods.autoconfig1.AutoConfig;
 import net.fabricmc.api.EnvType;

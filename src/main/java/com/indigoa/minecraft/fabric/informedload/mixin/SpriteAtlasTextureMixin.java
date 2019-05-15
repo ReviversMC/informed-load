@@ -2,13 +2,8 @@ package com.indigoa.minecraft.fabric.informedload.mixin;
 
 import com.indigoa.minecraft.fabric.informedload.InformedLoad;
 import com.indigoa.minecraft.fabric.informedload.TaskList;
-import com.sun.javafx.stage.StagePeerListener;
-import com.sun.org.apache.bcel.internal.generic.NEW;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.texture.PlayerSkinProvider;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.texture.TextureStitcher;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
@@ -17,11 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.struct.MemberInfo;
 
-import javax.management.Descriptor;
-import javax.xml.soap.Name;
-import java.awt.*;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 

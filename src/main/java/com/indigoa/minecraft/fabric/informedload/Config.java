@@ -3,7 +3,6 @@ package com.indigoa.minecraft.fabric.informedload;
 import me.sargunvohra.mcmods.autoconfig1.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1.annotation.ConfigEntry;
 import me.sargunvohra.mcmods.autoconfig1.shadowed.blue.endless.jankson.Comment;
-import net.minecraft.client.resource.language.I18n;
 
 /**
  * @author Indigo Amann
