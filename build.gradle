@@ -16,6 +16,7 @@ repositories {
 	maven { url = "https://maven.fabricmc.net/" }
 	maven { url = "https://minecraft.curseforge.com/api/maven" }
 	maven { url = 'http://maven.sargunv.s3-website-us-west-2.amazonaws.com/' }
+	//maven {url "https://maven.jamieswhiteshirt.com/libs-release/"} // Developer mode mod
 }
 
 
@@ -31,7 +32,7 @@ dependencies {
 	// not required, but we want to see our config screen
 	modCompile "io.github.prospector.modmenu:ModMenu:${project.mod_menu_version}"
 
-
+	//modCompile "com.jamieswhiteshirt:developer-mode:1.0.11" // developer mode mod
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	//modCompile "net.fabricmc:fabric:${project.fabric_version}" I Don't need it

@@ -12,6 +12,7 @@ import net.minecraft.util.math.MathHelper;
 
 import java.awt.*;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static net.minecraft.client.gui.DrawableHelper.fill;
 
@@ -52,17 +53,19 @@ public class InformedLoad implements ModInitializer {
     public static int findMiddle(int a, int b) {
         return (a + b) / 2;
     }
-    public static void makeProgressBar(int x, int y, int end_x, int end_y, Color innerColor, Color outerColor, float progress, String text, float fadeAmount/*, CallbackInfo ci*/) {
-        int percent = MathHelper.ceil((float)(end_x - x - 2) * progress);
-        //if (percent < 0) {
-        //    System.out.println(">0! EX-X-2=" + (end_x - x - 2));
-        //}
-        // Outer bar
-        fill(x - 1, y - 1, end_x + 1, end_y + 1, fadeOut(outerColor, fadeAmount));
-        // White fill
-        fill(x, y, end_x, end_y, -1);
-        // Inner progress bar
-        fill(x + 1, y + 1, x + 1 + percent, end_y - 1, fadeOut(innerColor, fadeAmount));
+    public static void makeProgressBar(int x, int y, int end_x, int end_y, float progress, String text, float fadeAmount, boolean vanilla) {
+        if (vanilla || config.forceVanillaProgressBars) {
+            int percent = MathHelper.ceil((float)(end_x - x - 2) * progress);
+            // Outer bar
+            fill(x - 1, y - 1, end_x + 1, end_y + 1, fadeOut(Color.BLACK, fadeAmount));
+            // White fill
+            fill(x, y, end_x, end_y, -1);
+            // Inner progress bar
+            fill(x + 1, y + 1, x + 1 + percent, end_y - 1, fadeOut(Color.RED, fadeAmount));
+        } else {
+            //Draw with renderProgressBar - why is this not vanilla? Blame mixins...
+            renderProgressBar.accept(new Object[]{x, y, end_x, end_y, progress, fadeAmount});
+        }
         //Text
         InformedLoad.textRenderer.draw(text, InformedLoad.findMiddle(x + 1, end_x - 1) - InformedLoad.textRenderer.getStringWidth(text) / 2f, y + 1, end_y - y - 2);
     }
@@ -73,6 +76,7 @@ public class InformedLoad implements ModInitializer {
         return new Color(-16777216 | (int)MathHelper.lerp(1.0F - amount, a.getRed(), b.getRed()) << 16 | (int)MathHelper.lerp(1.0F - amount, a.getGreen(), b.getGreen()) << 8 | (int)MathHelper.lerp(1.0F - amount, a.getBlue(), b.getBlue()));
     }
     public static Config config = null;
+    public static Consumer<Object[]> renderProgressBar = null;
     @Override
     public void onInitialize() {
         AutoConfig.register(Config.class, Toml4jConfigSerializer::new);

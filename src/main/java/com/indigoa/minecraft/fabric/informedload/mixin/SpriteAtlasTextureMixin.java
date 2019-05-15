@@ -30,39 +30,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 @Mixin(SpriteAtlasTexture.class)
 public class SpriteAtlasTextureMixin {
-    TaskStitchTextures taskStitchTextures;
-    public static class TaskStitchTextures extends TaskList.Task {
-        private int stage = 0;
-        private float subPercentage = 0;
-        private String extra = "";
-        public TaskStitchTextures() {
-            super("texstitch", "Stitching Textures");
-        }
-        public int render(int y, int middle_x, int window_width, int window_height, float fadeAmount) {
-            String name = stage == 0 ? "Preparing" : stage == 1 ? "Extracting Frames" : stage == 2 ? "Mipmapping" : stage == 3 ? "Stitching" : "Loading";
-            if (InformedLoad.config.maxProgressBarRows > 2) {
-                InformedLoad.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, Color.RED, Color.BLACK, (stage / 5f) + (subPercentage / 5f), (stage + 1) + "/5 - " + extra + name, fadeAmount);
-            }
-            TaskLoadModels.INSTANCE.stagePercentage = (stage / 5f) + (subPercentage / 5f);
-            return y + 20;
-        }
-        public void stage(int stage) {
-            this.stage = stage;
-            this.extra = "";
-            this.subPercentage = 0;
-        }
-        public void subPercentage(float subPercentage) {
-            this.subPercentage = subPercentage;
-        }
-        public void setExtra(String extra) {
-            this.extra = extra + " - ";
-        }
-    }
+    TaskList.Task.TaskStitchTextures taskStitchTextures;
+
     @Inject(method = "stitch", at = @At("HEAD"))
     public void showStitch(ResourceManager manager, Iterable iterable, Profiler profiler, CallbackInfoReturnable ci) {
         //TaskList.removeTask("addmodels");
         if (TaskList.hasTask("addmodels") || !TaskList.hasTask("loadmodels") || TaskList.hasTask("texstitch")) return;
-        taskStitchTextures = new TaskStitchTextures();
+        taskStitchTextures = new TaskList.Task.TaskStitchTextures();
         TaskList.addTask(taskStitchTextures);
         TaskList.Task.TaskLoadModels taskLoadModels = TaskList.Task.TaskLoadModels.INSTANCE;
         taskLoadModels.setStage(1);

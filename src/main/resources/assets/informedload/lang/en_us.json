@@ -3,5 +3,6 @@
     "text.autoconfig.informedload.category.default": "General",
     "text.autoconfig.informedload.option.multicoloredProgressBars": "Muilticolored Progress Bars",
     "text.autoconfig.informedload.option.splitProgressBars": "Split Progress Bars",
-    "text.autoconfig.informedload.option.maxProgressBarRows": "Maximum Onscreen Progress Bars"
+    "text.autoconfig.informedload.option.maxProgressBarRows": "Maximum Onscreen Progress Bars",
+    "text.autoconfig.informedload.option.forceVanillaProgressBars": "Force Vanilla Progress Bars"
 }
