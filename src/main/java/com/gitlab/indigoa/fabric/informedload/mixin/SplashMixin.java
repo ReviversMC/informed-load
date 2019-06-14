@@ -1,8 +1,8 @@
-package com.indigoa.minecraft.fabric.informedload.mixin;
+package com.gitlab.indigoa.fabric.informedload.mixin;
 
 import com.google.gson.JsonParser;
-import com.indigoa.minecraft.fabric.informedload.InformedLoad;
-import com.indigoa.minecraft.fabric.informedload.TaskList;
+import com.gitlab.indigoa.fabric.informedload.InformedLoad;
+import com.gitlab.indigoa.fabric.informedload.TaskList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.FontStorage;
 import net.minecraft.client.font.FontType;
@@ -17,7 +17,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.awt.*;
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -45,6 +44,7 @@ public abstract class SplashMixin extends Overlay {
         int middle_x = window_width / 2;
 
         String status = "Loading";
+
         if (!TaskList.isEmpty()) {
             Iterator iterator = TaskList.iterator();
             while (iterator.hasNext()) {

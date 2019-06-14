@@ -1,6 +1,6 @@
-package com.indigoa.minecraft.fabric.informedload.mixin;
+package com.gitlab.indigoa.fabric.informedload.mixin;
 
-import com.indigoa.minecraft.fabric.informedload.TaskList;
+import com.gitlab.indigoa.fabric.informedload.TaskList;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelBakeSettings;
