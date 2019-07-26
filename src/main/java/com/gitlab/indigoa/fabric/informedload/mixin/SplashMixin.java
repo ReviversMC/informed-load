@@ -7,8 +7,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.FontStorage;
 import net.minecraft.client.font.FontType;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Overlay;
-import net.minecraft.client.gui.SplashScreen;
+import net.minecraft.client.gui.screen.Overlay;
+import net.minecraft.client.gui.screen.SplashScreen;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -31,11 +31,11 @@ public abstract class SplashMixin extends Overlay {
     private float field_17770;
     @Shadow
     private void renderProgressBar(int int_1, int int_2, int int_3, int int_4, float float_1, float float_2) {}
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/SplashScreen;blit(IIIIII)V"))
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/SplashScreen;blit(IIIIII)V"))
     public void translateLogo(SplashScreen dis, int x, int y, int idk1, int idk2, int idk3, int idk4) {
         blit(x, y - 30, idk1, idk2, idk3,  idk4);
     }
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/SplashScreen;renderProgressBar(IIIIFF)V"))
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/SplashScreen;renderProgressBar(IIIIFF)V"))
     public void swapProgressRender(SplashScreen dis, int x, int y, int end_x, int end_y, float progress, float fadeAmount) {
         int window_width = this.client.window.getScaledWidth();
         int window_height = this.client.window.getScaledHeight();

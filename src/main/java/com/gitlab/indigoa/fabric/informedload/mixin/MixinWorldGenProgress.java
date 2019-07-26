@@ -1,34 +1,26 @@
 package com.gitlab.indigoa.fabric.informedload.mixin;
 
-import com.gitlab.indigoa.fabric.informedload.Config;
 import com.gitlab.indigoa.fabric.informedload.IProgressLogger;
 import com.gitlab.indigoa.fabric.informedload.IProgressTracker;
 import com.gitlab.indigoa.fabric.informedload.InformedLoad;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Screen;
-import net.minecraft.client.gui.WorldGenerationProgressScreen;
+import net.minecraft.client.gui.screen.LevelLoadingScreen;
 import net.minecraft.client.gui.WorldGenerationProgressTracker;
 import net.minecraft.server.WorldGenerationProgressLogger;
-import net.minecraft.text.TextComponent;
-import net.minecraft.world.chunk.ChunkPos;
 import net.minecraft.world.chunk.ChunkStatus;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.awt.*;
-import java.util.HashMap;
-
-import static net.minecraft.client.gui.DrawableHelper.fill;
 
 /**
  * @author Indigo A.
  */
-@Mixin(WorldGenerationProgressScreen.class)
+@Mixin(LevelLoadingScreen.class)
 public class MixinWorldGenProgress  {
     @Shadow
     public  WorldGenerationProgressTracker progressProvider;
@@ -42,14 +34,14 @@ public class MixinWorldGenProgress  {
                     int int_17 = InformedLoad.WorldGen.int_11 + int_15 * InformedLoad.WorldGen.int_5;
                     //fill(int_16, int_17, int_16 + InformedLoad.WorldGen.int_3, int_17 + InformedLoad.WorldGen.int_3, Color.RED.getRGB());
                     if (chunkStatus_1 != null && x >= int_16 && x <= int_16 + InformedLoad.WorldGen.int_3 && y >= int_17 && y <= int_17 + InformedLoad.WorldGen.int_3) {
-                        ((WorldGenerationProgressScreen)(Object)this).renderTooltip("Step: " + InformedLoad.STATUS_TO_NAME.get(chunkStatus_1), x, y);
+                        ((LevelLoadingScreen)(Object)this).renderTooltip("Step: " + InformedLoad.STATUS_TO_NAME.get(chunkStatus_1), x, y);
                     }
                 }
             }
             //screen.renderTooltip("FOOO1111", x, y);
         }
     }
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/WorldGenerationProgressScreen;drawChunkMap(Lnet/minecraft/client/gui/WorldGenerationProgressTracker;IIII)V"))
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/LevelLoadingScreen;drawChunkMap(Lnet/minecraft/client/gui/WorldGenerationProgressTracker;IIII)V"))
     private void redrawChunkMap(WorldGenerationProgressTracker worldGenerationProgressTracker_1, int x, int y, int scale, int int_4) {
         if (!InformedLoad.config.worldload_hateDisplay.progressBarDisplay) {
             if (InformedLoad.config.worldload_loveDisplay.showProgressBar) {
@@ -80,7 +72,6 @@ public class MixinWorldGenProgress  {
             WorldGenerationProgressLogger progressLogger = progressTracker.getProgressLogger();
             float totals = ((IProgressLogger)((Object)progressLogger)).getTotalCount();
             int biomes = 0, noise = 0, surface = 0, carvers = 0, liquid_carvers = 0, features = 0, light = 0, spawn = 0, full = 0;
-            HashMap<ChunkPos, ChunkStatus> map = new HashMap();
             for (ChunkStatus e: progressTracker.getChunkStatuses().values()) {
                 if (e == ChunkStatus.BIOMES) {
                     biomes++;
@@ -160,8 +151,8 @@ public class MixinWorldGenProgress  {
             InformedLoad.makeProgressBar(x - 150, py, x + 150, py + 10, full / totals, "Fully Loaded: " + full + "/" + (int)totals + " - " + (int)((full/totals)*100) + "%", 1, outer, new Color(182, 220, 182));
         }
     }
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/WorldGenerationProgressScreen;drawCenteredString(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"))
-    public void drawCenteredStringOrProgressBar(WorldGenerationProgressScreen worldGenerationProgressScreen, TextRenderer textRenderer_1, String string_1, int x, int y, int int_3) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/LevelLoadingScreen;drawCenteredString(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"))
+    public void drawCenteredStringOrProgressBar(LevelLoadingScreen LevelLoadingScreen, TextRenderer textRenderer_1, String string_1, int x, int y, int int_3) {
         IProgressTracker progressTracker = ((IProgressTracker)((Object)progressProvider));
         WorldGenerationProgressLogger progressLogger = progressTracker.getProgressLogger();
         int totals = ((IProgressLogger)((Object)progressLogger)).getTotalCount();
@@ -172,7 +163,7 @@ public class MixinWorldGenProgress  {
                 if (InformedLoad.config.worldload_loveDisplay.bigChunkViewer) y += 30;
                 InformedLoad.makeProgressBar(x - 150, y, x + 150, y + 10, progressProvider.getProgressPercentage() / 100f, done + "/" + totals + " Chunks Loaded - " + string_1, 1, Color.DARK_GRAY, Color.LIGHT_GRAY);
             } else {
-                worldGenerationProgressScreen.drawCenteredString(textRenderer_1, string_1, x, y, int_3);
+                LevelLoadingScreen.drawCenteredString(textRenderer_1, string_1, x, y, int_3);
             }
         }
     }

@@ -3,7 +3,6 @@ package com.gitlab.indigoa.fabric.informedload.mixin; /**
  */
 
 import com.gitlab.indigoa.fabric.informedload.IProgressLogger;
-import net.minecraft.client.gui.WorldGenerationProgressTracker;
 import net.minecraft.server.WorldGenerationProgressLogger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;

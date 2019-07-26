@@ -1,6 +1,5 @@
 package com.gitlab.indigoa.fabric.informedload;
 
-import com.sun.prism.shader.AlphaOne_Color_AlphaTest_Loader;
 import me.sargunvohra.mcmods.autoconfig1.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1.annotation.ConfigEntry;
 import me.sargunvohra.mcmods.autoconfig1.shadowed.blue.endless.jankson.Comment;
@@ -30,7 +29,7 @@ public class Config implements ConfigData {
         public boolean progressBarDisplay = false;
     }
     public static class LoveDisplay {
-        @Comment("Make it easier to read using grayscale")
+        @Comment("Grayscale-ify the chunkload square")
         public boolean simplifyColors = true;
         @Comment("Bigger is better!")
         public boolean bigChunkViewer = true;

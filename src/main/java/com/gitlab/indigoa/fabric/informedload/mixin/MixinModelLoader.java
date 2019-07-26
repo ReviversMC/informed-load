@@ -85,10 +85,6 @@ public class MixinModelLoader {
             if (taskAddModels.items == taskAddModels.items_o && taskAddModels.blocks == taskAddModels.blocks_o) TaskList.removeTask("addmodels");
         //}
     }
-    @Inject(method = "<init>", at = @At("RETURN"))
-    private void initDone(ResourceManager resourceManager, SpriteAtlasTexture spriteAtlasTexture, Profiler profiler, CallbackInfo ci) {
-        //TaskList.removeTask("addmodels");
-    }
     @Inject(method = "upload(Lnet/minecraft/util/profiler/Profiler;)V", at = @At("HEAD"))
     private void listProgressUpload(Profiler profiler, CallbackInfo ci) {
         taskBakeModels = new TaskList.Task.TaskBakeModels(modelsToBake.size());
