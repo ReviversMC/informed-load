@@ -67,7 +67,6 @@ public abstract class MixinMinecraftClient {
         this.resourcePackContainerManager.callCreators();
         List<ResourcePack> list_1 = (List)this.resourcePackContainerManager.getEnabledContainers().stream().map(ResourcePackContainer::createResourcePack).collect(Collectors.toList());
         Iterator var8 = list_1.iterator();
-        System.out.println(list_1);
         while(var8.hasNext()) {
             ResourcePack resourcePack_1 = (ResourcePack)var8.next();
             resourceManager.addPack(resourcePack_1);

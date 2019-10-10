@@ -136,6 +136,6 @@ public class Modloader {
         keepRendering = false;
     }
     public ProgressBar createProgressBar(int row, ProgressBar.SplitType splitType) {
-        return ProgressBar.createProgressBar(window, row * 20, splitType);
+        return ProgressBar.createProgressBar(window, row * 20 + window.getScaledHeight() / 4 - 30, splitType);
     }
 }
