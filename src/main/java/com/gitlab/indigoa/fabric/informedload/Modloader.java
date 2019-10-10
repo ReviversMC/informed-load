@@ -87,7 +87,7 @@ public class Modloader {
     }
     Window window;
     public void render() {
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        GlStateManager.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         GlStateManager.loadIdentity();
         GlStateManager.ortho(0.0D, window.getScaledWidth(), window.getScaledHeight(), 0.0D, -1000.0D, 1000.0D);
