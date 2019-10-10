@@ -87,6 +87,7 @@ public class Modloader {
         clientEntrypoints.setText(clientToMeta.size() + " Client");
 
         AtomicInteger index = new AtomicInteger();
+        AtomicInteger total = new AtomicInteger();
         BiConsumer<Object, Boolean> runInitializer = (initializer, client) -> {
             index.set(index.get() + 1);
             subText1 = "";
@@ -98,19 +99,20 @@ public class Modloader {
                 subText1 = metadata.getName() + " (" + metadata.getId() + ")";
             } else {
                 subText1 = "UNKNOWN MOD";
+                total.set(total.get() + 1);
             }
             subText2 = id;
 
             if (client) {
                 ((ClientModInitializer)initializer).onInitializeClient();
-                clientEntrypoints.setText(index.get() + "/" + clientToMeta.size() + " Client");
-                clientEntrypoints.setProgress((float)(index.get()) / clientToMeta.size());
-                overall.setProgress((1f/2f) + 0.25f + (((float)(index.get()) / clientToMeta.size()) / 4f));
+                clientEntrypoints.setText(index.get() + "/" + total.get() + " Client");
+                clientEntrypoints.setProgress((float)(index.get()) / total.get());
+                overall.setProgress((1f/2f) + 0.25f + (((float)(index.get()) / total.get()) / 4f));
             } else {
                 ((ModInitializer)initializer).onInitialize();
-                mainEntrypoints.setText(index.get() + "/" + mainToMeta.size() + " Common");
-                mainEntrypoints.setProgress((float)(index.get()) / mainToMeta.size());
-                overall.setProgress((1f/2f) + (((float)(index.get()) / mainToMeta.size()) / 4f));
+                mainEntrypoints.setText(index.get() + "/" + total.get() + " Common");
+                mainEntrypoints.setProgress((float)(index.get()) / total.get());
+                overall.setProgress((1f/2f) + (((float)(index.get()) / total.get()) / 4f));
             }
         };
         overall.setText("Creating Render Callbacks");
@@ -118,9 +120,11 @@ public class Modloader {
         overall.setText("Running Entrypoints - Common");
         progressBars.add(mainEntrypoints);
         progressBars.add(clientEntrypoints);
+        total.set(mainToMeta.size());
         InformedLoadUtils.logInitErrors("main", FabricLoader.INSTANCE.getEntrypoints("main", ModInitializer.class), initializer -> runInitializer.accept(initializer, false));
         overall.setText("Running Entrypoints - Client");
         index.set(0);
+        total.set(clientToMeta.size());
         InformedLoadUtils.logInitErrors("client", FabricLoader.INSTANCE.getEntrypoints("client", ClientModInitializer.class), initializer -> runInitializer.accept(initializer, true));
         progressBars.remove(mainEntrypoints);
         progressBars.remove(clientEntrypoints);
