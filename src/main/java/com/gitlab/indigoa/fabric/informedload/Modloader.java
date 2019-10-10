@@ -10,7 +10,11 @@ import net.fabricmc.loader.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.metadata.EntrypointMetadata;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.Window;
+import net.minecraft.util.Identifier;
+import org.lwjgl.opengl.GL14;
 
 import java.awt.*;
 import java.io.File;
@@ -24,13 +28,16 @@ import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Modloader {
+    private static final Identifier LOGO = new Identifier("textures/gui/title/mojang.png");
     MinecraftClient client;
+    TextureManager textureManager;
     List<ProgressBar> progressBars = new ArrayList<>();
     String subText1 = "", subText2 = "";
     boolean keepRendering = true;
-    public void loadMods(MinecraftClient mcclient, Window window, File runDirectory) {
+    public void loadMods(MinecraftClient mcclient, TextureManager textureManager, Window window, File runDirectory) {
         this.client = mcclient;
         this.window = window;
+        this.textureManager = textureManager;
         Thread loaderThread = new Thread(() -> runLoad(runDirectory));
         loaderThread.start();
         while (loaderThread.isAlive()) {
@@ -40,9 +47,12 @@ public class Modloader {
     Window window;
     public void render() {
         GlStateManager.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        GlStateManager.clear(16640, MinecraftClient.IS_SYSTEM_MAC);
         GlStateManager.loadIdentity();
         GlStateManager.ortho(0.0D, window.getScaledWidth(), window.getScaledHeight(), 0.0D, -1000.0D, 1000.0D);
+        GlStateManager.enableBlend();
+        textureManager.bindTexture(LOGO);
+        DrawableHelper.blit((window.getScaledWidth() - 256) / 2, (window.getScaledHeight() - 256) / 2 - 30, 0, 0, 0, 256, 256, 256, 256);
         for (int i = 0; i < progressBars.size(); i++) {
             ProgressBar progressBar = progressBars.get(i);
             progressBar.render(window);

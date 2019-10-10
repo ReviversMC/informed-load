@@ -107,6 +107,6 @@ public abstract class MixinMinecraftClient {
             fontStorage_1.setFonts(Collections.singletonList(FontType.BITMAP.createLoader(new JsonParser().parse(InformedLoadUtils.FONT_JSON).getAsJsonObject()).load(resourceManager)));
             InformedLoadUtils.textRenderer = new TextRenderer(textureManager, fontStorage_1);
         }
-        new Modloader().loadMods((MinecraftClient)(Object) this, window, runDirectory);
+        new Modloader().loadMods((MinecraftClient)(Object) this, textureManager, window, runDirectory);
     }
 }
