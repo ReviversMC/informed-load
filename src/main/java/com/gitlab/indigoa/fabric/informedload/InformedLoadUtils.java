@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import me.sargunvohra.mcmods.autoconfig1.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.FabricLoader;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.WorldGenerationProgressTracker;
 import net.minecraft.util.SystemUtil;
@@ -13,7 +14,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.chunk.ChunkStatus;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static net.minecraft.client.gui.DrawableHelper.fill;
@@ -21,7 +25,7 @@ import static net.minecraft.client.gui.DrawableHelper.fill;
 /**
  * @author Indigo Amann
  */
-public class InformedLoad implements ModInitializer {
+public class InformedLoadUtils implements ModInitializer {
     public static final String MODID = "informedload";
     public static TextRenderer textRenderer;
     public static final String FONT_JSON = //Taken from loadingspice (https://github.com/therealfarfetchd/loadingspice)
@@ -59,7 +63,7 @@ public class InformedLoad implements ModInitializer {
             renderProgressBar.accept(new Object[]{x, y, end_x, end_y, progress, fadeAmount});
         }
         //Text
-        InformedLoad.textRenderer.draw(text, InformedLoad.findMiddle(x + 1, end_x - 1) - InformedLoad.textRenderer.getStringWidth(text) / 2f, y + 1, end_y - y - 2);
+        InformedLoadUtils.textRenderer.draw(text, InformedLoadUtils.findMiddle(x + 1, end_x - 1) - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, y + 1, end_y - y - 2);
     }
     public static void makeProgressBar(int x, int y, int end_x, int end_y, float progress, String text, float fadeAmount, Color outer, Color inner) {
         int percent = MathHelper.ceil((float)(end_x - x - 2) * progress);
@@ -70,7 +74,7 @@ public class InformedLoad implements ModInitializer {
         // Inner progress bar
         fill(x + 1, y + 1, x + 1 + percent, end_y - 1, fadeOut(inner, fadeAmount));
         //Text
-        InformedLoad.textRenderer.draw(text, InformedLoad.findMiddle(x + 1, end_x - 1) - InformedLoad.textRenderer.getStringWidth(text) / 2f, y + 1, end_y - y - 2);
+        InformedLoadUtils.textRenderer.draw(text, InformedLoadUtils.findMiddle(x + 1, end_x - 1) - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, y + 1, end_y - y - 2);
     }
     public static int fadeOut(Color color, float amount) {
         return fadeColor(color, Color.WHITE, amount).getRGB();
@@ -82,6 +86,7 @@ public class InformedLoad implements ModInitializer {
     public static Consumer<Object[]> renderProgressBar = null;
     @Override
     public void onInitialize() {
+        System.out.println("AFTR INIT");
         AutoConfig.register(Config.class, Toml4jConfigSerializer::new);
         config = AutoConfig.getConfigHolder(Config.class).getConfig();
     }
@@ -183,5 +188,28 @@ public class InformedLoad implements ModInitializer {
         public static int int_11 = 0;
         public static int int_12 = 0;
         public static int int_13 = 0;
+    }
+    public static <T> void logInitErrors(String name, Collection<T> entrypoints, Consumer<T> entrypointConsumer) {
+        List<Throwable> errors = new ArrayList<>();
+
+        FabricLoader.INSTANCE.getLogger().debug("Iterating over entrypoint '" + name + "'");
+
+        entrypoints.forEach((e) -> {
+            try {
+                entrypointConsumer.accept(e);
+            } catch (Throwable t) {
+                errors.add(t);
+            }
+        });
+
+        if (!errors.isEmpty()) {
+            RuntimeException exception = new RuntimeException("Could not execute entrypoint stage '" + name + "' due to errors!");
+
+            for (Throwable t : errors) {
+                exception.addSuppressed(t);
+            }
+
+            throw exception;
+        }
     }
 }

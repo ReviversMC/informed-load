@@ -1,6 +1,6 @@
 package com.gitlab.indigoa.fabric.informedload.mixin;
 
-import com.gitlab.indigoa.fabric.informedload.InformedLoad;
+import com.gitlab.indigoa.fabric.informedload.InformedLoadUtils;
 import com.gitlab.indigoa.fabric.informedload.TaskList;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -60,14 +60,14 @@ public class SpriteAtlasTextureMixin {
     @Inject(method = "loadSprites", at = @At("HEAD"))
     public void cacheSpritesToLoad(ResourceManager resourceManager_1, Set<Identifier> set_1, CallbackInfoReturnable ci) {
         if (TaskList.hasTask("addmodels") || !TaskList.hasTask("loadmodels") || !TaskList.hasTask("texstitch") || taskStitchTextures == null) return;
-        InformedLoad.spritesToLoad = set_1.size();
+        InformedLoadUtils.spritesToLoad = set_1.size();
     }
     @Inject(method = "method_18160", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/ConcurrentLinkedQueue;add(Ljava/lang/Object;)Z"))
     public void showSpriteLoadStatus(Identifier identifier, ResourceManager resourceManager_1, ConcurrentLinkedQueue concurrentLinkedQueue, CallbackInfo ci) {
         if (TaskList.hasTask("addmodels") || !TaskList.hasTask("loadmodels") || !TaskList.hasTask("texstitch") || taskStitchTextures == null) return;
         int size = concurrentLinkedQueue.size();
-        taskStitchTextures.setExtra(size + "/" + InformedLoad.spritesToLoad);
-        taskStitchTextures.subPercentage((float) size / InformedLoad.spritesToLoad);
+        taskStitchTextures.setExtra(size + "/" + InformedLoadUtils.spritesToLoad);
+        taskStitchTextures.subPercentage((float) size / InformedLoadUtils.spritesToLoad);
     }
     //@Inject(method = "method_18161", at = @At(value = "INVOKE", target = "Ljava/util/ArrayList;add(Ljava/lang/Object;)Z"))
     //public void showSpriteLoadStatusB(ResourceManager resourceManager_1, TextureStitcher textureStitcher_1, CallbackInfoReturnable ci) {
@@ -78,7 +78,7 @@ public class SpriteAtlasTextureMixin {
     public void countLoadedSprites(ResourceManager resourceManager, Sprite sprite, ConcurrentLinkedQueue concurrentLinkedQueue, CallbackInfo ci) {
         if (TaskList.hasTask("addmodels") || !TaskList.hasTask("loadmodels") || !TaskList.hasTask("texstitch") || taskStitchTextures == null) return;
         int size = concurrentLinkedQueue.size();
-        taskStitchTextures.setExtra(size + "/" + InformedLoad.spritesToLoad);
-        taskStitchTextures.subPercentage((float) size / InformedLoad.spritesToLoad);
+        taskStitchTextures.setExtra(size + "/" + InformedLoadUtils.spritesToLoad);
+        taskStitchTextures.subPercentage((float) size / InformedLoadUtils.spritesToLoad);
     }
 }

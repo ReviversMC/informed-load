@@ -1,7 +1,7 @@
 package com.gitlab.indigoa.fabric.informedload.mixin;
 
+import com.gitlab.indigoa.fabric.informedload.InformedLoadUtils;
 import com.google.gson.JsonParser;
-import com.gitlab.indigoa.fabric.informedload.InformedLoad;
 import com.gitlab.indigoa.fabric.informedload.TaskList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.FontStorage;
@@ -51,7 +51,7 @@ public abstract class SplashMixin extends Overlay {
                 status += " - " + ((TaskList.Task) iterator.next()).name;
             }
         }
-        InformedLoad.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, this.field_17770, status, fadeAmount, false);
+        InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, this.field_17770, status, fadeAmount, false);
         y += 20;
         if (!TaskList.isEmpty()) {
             Iterator iterator = TaskList.iterator();
@@ -62,13 +62,13 @@ public abstract class SplashMixin extends Overlay {
     }
     @Inject(method = "<init>", at = @At("RETURN"))
     public void setup(CallbackInfo ci) {
-        if (InformedLoad.textRenderer == null) {
+        if (InformedLoadUtils.textRenderer == null) {
             MinecraftClient client = MinecraftClient.getInstance();
             final FontStorage fontStorage_1 = new FontStorage(client.getTextureManager(), new Identifier("loading"));
-            fontStorage_1.setFonts(Collections.singletonList(FontType.BITMAP.createLoader(new JsonParser().parse(InformedLoad.FONT_JSON).getAsJsonObject()).load(client.getResourceManager())));
-            InformedLoad.textRenderer = new TextRenderer(client.getTextureManager(), fontStorage_1);
+            fontStorage_1.setFonts(Collections.singletonList(FontType.BITMAP.createLoader(new JsonParser().parse(InformedLoadUtils.FONT_JSON).getAsJsonObject()).load(client.getResourceManager())));
+            InformedLoadUtils.textRenderer = new TextRenderer(client.getTextureManager(), fontStorage_1);
         }
-        InformedLoad.renderProgressBar = (params) -> {
+        InformedLoadUtils.renderProgressBar = (params) -> {
             renderProgressBar((int) params[0], (int) params[1], (int) params[2], (int) params[3], (float) params[4], (float) params[5]);
         };
     }

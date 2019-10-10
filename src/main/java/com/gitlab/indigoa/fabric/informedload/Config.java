@@ -7,7 +7,7 @@ import me.sargunvohra.mcmods.autoconfig1.shadowed.blue.endless.jankson.Comment;
 /**
  * @author Indigo Amann
  */
-@me.sargunvohra.mcmods.autoconfig1.annotation.Config(name = InformedLoad.MODID)
+@me.sargunvohra.mcmods.autoconfig1.annotation.Config(name = InformedLoadUtils.MODID)
 public class Config implements ConfigData {
     public static enum SplitType {
         SPLIT, IN_ORDER, SINGLE

@@ -6,7 +6,7 @@
   "name": "Informed Load",
   "description": "Tells you what's actually going on while Minecraft is loading!",
   "authors": [
-    "Indicode."
+    "Indicode"
   ],
   "contact": {
     "homepage": "https://minecraft.curseforge.com/projects/informed-load-fabric",
@@ -20,15 +20,16 @@
   "license": "CC0-1.0",
   "icon": "assets/informedload/icon.png",
 
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
     "modmenu": [
       "com.gitlab.indigoa.fabric.informedload.ModMenuIntegration"
     ],
     "main": [
-      "com.gitlab.indigoa.fabric.informedload.InformedLoad"
+      "com.gitlab.indigoa.fabric.informedload.InformedLoadUtils"
     ]
   },
+
 
   "requires": {
     "fabricloader": ">=0.4.0",
