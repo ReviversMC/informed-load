@@ -92,11 +92,13 @@ public class Modloader {
                 }
             }
         }
+        int totalMainEntrypoints = FabricLoader.INSTANCE.getEntrypoints("main", ModInitializer.class).size();
+        int totalClientEntrypoints = FabricLoader.INSTANCE.getEntrypoints("client", ClientModInitializer.class).size();
         progressBars.remove(entrypointBar);
         ProgressBar mainEntrypoints = createProgressBar(1, ProgressBar.SplitType.LEFT);
-        mainEntrypoints.setText(mainToMeta.size() + " Common");
+        mainEntrypoints.setText(totalMainEntrypoints + " Common");
         ProgressBar clientEntrypoints = createProgressBar(1, ProgressBar.SplitType.RIGHT);
-        clientEntrypoints.setText(clientToMeta.size() + " Client");
+        clientEntrypoints.setText(totalClientEntrypoints + " Client");
 
         AtomicInteger index = new AtomicInteger();
         AtomicInteger total = new AtomicInteger();
@@ -111,7 +113,6 @@ public class Modloader {
                 subText1 = metadata.getName() + " (" + metadata.getId() + ")";
             } else {
                 subText1 = "UNKNOWN MOD";
-                total.set(total.get() + 1);
             }
             subText2 = id;
 
@@ -132,13 +133,13 @@ public class Modloader {
         overall.setText("Running Entrypoints - Common");
         progressBars.add(mainEntrypoints);
         progressBars.add(clientEntrypoints);
-        total.set(mainToMeta.size());
+        total.set(totalMainEntrypoints);
         InformedLoadUtils.logInitErrors("main", FabricLoader.INSTANCE.getEntrypoints("main", ModInitializer.class), initializer -> runInitializer.accept(initializer, false));
         mainEntrypoints.setProgress(1);
         mainEntrypoints.setText("Common Complete");
         overall.setText("Running Entrypoints - Client");
         index.set(0);
-        total.set(clientToMeta.size());
+        total.set(totalClientEntrypoints);
         InformedLoadUtils.logInitErrors("client", FabricLoader.INSTANCE.getEntrypoints("client", ClientModInitializer.class), initializer -> runInitializer.accept(initializer, true));
         progressBars.remove(mainEntrypoints);
         progressBars.remove(clientEntrypoints);
