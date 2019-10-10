@@ -12,6 +12,7 @@ import net.fabricmc.loader.metadata.EntrypointMetadata;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Window;
 
+import java.awt.*;
 import java.io.File;
 import java.util.*;
 import java.util.List;
@@ -52,7 +53,7 @@ public class Modloader {
         glfwPollEvents();
     }
     private void renderSubText(String text, int row) {
-        InformedLoadUtils.textRenderer.draw(text, window.getScaledWidth() / 2f - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, window.getScaledHeight() - (row + 1) * 20, 0);
+        InformedLoadUtils.textRenderer.draw(text, window.getScaledWidth() / 2f - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, window.getScaledHeight() - (row + 1) * 20, 0x888888);
     }
     private void runLoad(File runDirectory) {
         progressBars.clear();
@@ -133,6 +134,6 @@ public class Modloader {
         keepRendering = false;
     }
     public ProgressBar createProgressBar(int row, ProgressBar.SplitType splitType) {
-        return ProgressBar.createProgressBar(window, (row + 4) * 20, splitType);
+        return ProgressBar.createProgressBar(window, (row + 6) * 20, splitType);
     }
 }

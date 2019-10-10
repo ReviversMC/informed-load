@@ -23,7 +23,7 @@ public class ProgressBar {
         this.inner = inner;
     }
     public ProgressBar(int x, int y, int xm) {
-        this(x, y, xm, Color.WHITE, Color.RED);
+        this(x, y, xm, Color.WHITE, new Color(226, 40, 55));
     }
     public void setText(String text) {
         this.text = text;
