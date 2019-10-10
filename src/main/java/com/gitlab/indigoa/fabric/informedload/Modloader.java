@@ -31,6 +31,7 @@ import static org.lwjgl.opengl.GL11.glPopMatrix;
 public class Modloader {
     MinecraftClient client;
     String mod = "", id = "";
+    boolean keepRendering = true;
     public void loadMods(MinecraftClient mcclient, Window window, File runDirectory) {
         this.client = mcclient;
         this.window = window;
@@ -38,11 +39,32 @@ public class Modloader {
         /*if (runDir == null) {
             runDir = new File(".");
         }*/
-        long ttimeStart = new Date().getTime();
-        long itimeStart = new Date().getTime();
+        Thread loaderThread = new Thread(() -> runLoad(runDirectory));
+        loaderThread.start();
+        while (loaderThread.isAlive()) {
+            render();
+        }
+    }
+    Window window;
+    public void render() {
+        GlStateManager.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        GlStateManager.loadIdentity();
+        GlStateManager.ortho(0.0D, window.getScaledWidth(), window.getScaledHeight(), 0.0D, -1000.0D, 1000.0D);
+        renderProgressBar(id, 0.6f, 1);
+        glfwSwapBuffers(window.getHandle());
+        glfwPollEvents();
+    }
+    public void renderProgressBar(String text, float progress, int row) {
+        if (text == null) text = "<NULL>";
+        int x = window.getScaledWidth() / 2 - 150;
+        int xm = window.getScaledWidth() / 2 + 150;
+        int y = window.getScaledHeight() / 2 + row * 20;
+        int ym = y + 10;
+        InformedLoadUtils.makeProgressBar(x, y, xm, ym, progress, text, 1, true);
+    }
+    private void runLoad(File runDirectory) {
         FabricLoader.INSTANCE.instantiateMods(runDirectory, this);
-        long itimeEnd = new Date().getTime();
-        System.out.println("Instantiation took " + (itimeEnd - itimeStart) + " ms");
         Map<String, ModMetadata> mainToMeta = new HashMap<>();
         Map<String, ModMetadata> clientToMeta = new HashMap<>();
         for (net.fabricmc.loader.api.ModContainer modContainer : FabricLoader.INSTANCE.getAllMods()) {
@@ -73,34 +95,22 @@ public class Modloader {
             //renderStatusText(ownerString);
             mod = ownerString;
             this.id = id;
-            render();
+            //render();
             if (client) ((ClientModInitializer)initializer).onInitializeClient();
             else ((ModInitializer)initializer).onInitialize();
             long timeEnd = new Date().getTime();
             System.out.println("Ran " + (client ? "client" : "") + " initializer " + id + " for mod " + ownerString + " (" + (timeEnd - timeStart) + " ms)");
-            //--progress.get().accept((double)(index.get()) / (clientToMeta.size() + mainToMeta.size()));
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+
         };
         InformedLoadUtils.logInitErrors("main", FabricLoader.INSTANCE.getEntrypoints("main", ModInitializer.class), initializer -> runInitializer.accept(initializer, false));
         InformedLoadUtils.logInitErrors("client", FabricLoader.INSTANCE.getEntrypoints("client", ClientModInitializer.class), initializer -> runInitializer.accept(initializer, true));
-        long ttimeEnd = new Date().getTime();
-        System.out.println("Total Init took " + (ttimeEnd - ttimeStart) + " ms");
-    }
-    Window window;
-    public void render() {
-        GlStateManager.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        GlStateManager.loadIdentity();
-        GlStateManager.ortho(0.0D, window.getScaledWidth(), window.getScaledHeight(), 0.0D, -1000.0D, 1000.0D);
-        renderProgressBar(id, 0.6f, 1);
-        glfwSwapBuffers(window.getHandle());
-        glfwPollEvents();
-    }
-    public void renderProgressBar(String text, float progress, int row) {
-        if (text == null) text = "<NULL>";
-        int x = window.getScaledWidth() / 2 - 150;
-        int xm = window.getScaledWidth() / 2 + 150;
-        int y = window.getScaledHeight() / 2 + row * 20;
-        int ym = y + 10;
-        InformedLoadUtils.makeProgressBar(x, y, xm, ym, progress, text, 1, true);
+        keepRendering = false;
     }
 }
