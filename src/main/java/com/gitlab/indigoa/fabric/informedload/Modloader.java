@@ -1,5 +1,6 @@
 package com.gitlab.indigoa.fabric.informedload;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.FabricLoader;
@@ -13,6 +14,7 @@ import org.lwjgl.opengl.GL14;
 import org.lwjgl.stb.STBEasyFont;
 import org.lwjgl.system.MemoryUtil;
 
+import java.awt.*;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.Date;
@@ -87,56 +89,18 @@ public class Modloader {
     public void render() {
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(0.0D, window.getWidth(), window.getHeight(), 0.0D, -1000.0D, 1000.0D);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-
-//            // replace with more modern opengl?
-//            glBegin(GL_QUADS);
-//            glColor3f(0.1f, 0.1f, 0.9f);
-//            glVertex2f(0, 0);
-//            glVertex2f(0, screenHeight);
-//            glVertex2f(screenWidth * progress, screenHeight);
-//            glVertex2f(screenWidth * progress, 0);
-//            glEnd();
-
-        glEnableClientState(GL11.GL_VERTEX_ARRAY);
-        glEnable(GL_BLEND);
-        forge_renderMessage("Initializing mods:", new float[]{0, 0, 0, 1}, 1, 1);
-        forge_renderMessage(mod, new float[]{0, 0, 0, 1}, 2, 1);
-        forge_renderMessage(id, new float[]{0.5f, 0.5f, 0.5f, 1}, 4, 1);
+        GlStateManager.loadIdentity();
+        GlStateManager.ortho(0.0D, window.getScaledWidth(), window.getScaledHeight(), 0.0D, -1000.0D, 1000.0D);
+        renderProgressBar(id, 0.6f, 1);
         glfwSwapBuffers(window.getHandle());
         glfwPollEvents();
     }
-    /*public void renderStatusText(String text) {
-        int x = window.getWidth() / 2;
-        int y = 50;
-        System.out.println("TXT:  " + text);
-        //InformedLoadUtils.textRenderer.draw(text, x - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, y, 20);
-        forge_renderMessage(text, new float[]{1f,0f,0f,1f}, 5, 1);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }*/
-    private void forge_renderMessage(String message, final float[] colour, int row, float alpha) {
-        if (message == null) message = "<Unknown>";
-        ByteBuffer charBuffer = MemoryUtil.memAlloc(message.length() * 270);
-        int quads = STBEasyFont.stb_easy_font_print(0, 0, message, null, charBuffer);
-
-        glVertexPointer(3, GL11.GL_FLOAT, 16, charBuffer);
-        glEnable(GL_BLEND);
-        GL14.glBlendColor(0,0,0, alpha);
-        glBlendFunc(GL14.GL_CONSTANT_ALPHA, GL14.GL_ONE_MINUS_CONSTANT_ALPHA);
-        glColor3f(colour[0], colour[1], colour[2]);
-        glPushMatrix();
-        glTranslatef(10, row * 20, 0);
-        glScalef(2, 2, 1);
-        glDrawArrays(GL11.GL_QUADS, 0, quads * 4);
-        glPopMatrix();
-        MemoryUtil.memFree(charBuffer);
+    public void renderProgressBar(String text, float progress, int row) {
+        if (text == null) text = "<NULL>";
+        int x = window.getScaledWidth() / 2 - 150;
+        int xm = window.getScaledWidth() / 2 + 150;
+        int y = window.getScaledHeight() / 2 + row * 20;
+        int ym = y + 10;
+        InformedLoadUtils.makeProgressBar(x, y, xm, ym, progress, text, 1, true);
     }
 }
