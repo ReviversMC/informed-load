@@ -86,7 +86,6 @@ public class InformedLoadUtils implements ModInitializer {
     public static Consumer<Object[]> renderProgressBar = null;
     @Override
     public void onInitialize() {
-        System.out.println("AFTR INIT");
         AutoConfig.register(Config.class, Toml4jConfigSerializer::new);
         config = AutoConfig.getConfigHolder(Config.class).getConfig();
     }

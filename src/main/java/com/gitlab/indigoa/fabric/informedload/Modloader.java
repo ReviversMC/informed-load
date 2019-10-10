@@ -1,5 +1,7 @@
 package com.gitlab.indigoa.fabric.informedload;
 
+import com.gitlab.indigoa.fabric.informedload.api.ProgressBar;
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
@@ -9,36 +11,25 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.metadata.EntrypointMetadata;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Window;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL14;
-import org.lwjgl.stb.STBEasyFont;
-import org.lwjgl.system.MemoryUtil;
 
-import java.awt.*;
 import java.io.File;
-import java.nio.ByteBuffer;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
 
 public class Modloader {
     MinecraftClient client;
-    String mod = "", id = "";
+    List<ProgressBar> progressBars = new ArrayList<>();
+    String subText1 = "", subText2 = "";
     boolean keepRendering = true;
     public void loadMods(MinecraftClient mcclient, Window window, File runDirectory) {
         this.client = mcclient;
         this.window = window;
-
-        /*if (runDir == null) {
-            runDir = new File(".");
-        }*/
         Thread loaderThread = new Thread(() -> runLoad(runDirectory));
         loaderThread.start();
         while (loaderThread.isAlive()) {
@@ -51,25 +42,34 @@ public class Modloader {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         GlStateManager.loadIdentity();
         GlStateManager.ortho(0.0D, window.getScaledWidth(), window.getScaledHeight(), 0.0D, -1000.0D, 1000.0D);
-        renderProgressBar(id, 0.6f, 1);
+        for (int i = 0; i < progressBars.size(); i++) {
+            ProgressBar progressBar = progressBars.get(i);
+            progressBar.render();
+        }
+        renderSubText(subText2, 0);
+        renderSubText(subText1, 1);
         glfwSwapBuffers(window.getHandle());
         glfwPollEvents();
     }
-    public void renderProgressBar(String text, float progress, int row) {
-        if (text == null) text = "<NULL>";
-        int x = window.getScaledWidth() / 2 - 150;
-        int xm = window.getScaledWidth() / 2 + 150;
-        int y = window.getScaledHeight() / 2 + row * 20;
-        int ym = y + 10;
-        InformedLoadUtils.makeProgressBar(x, y, xm, ym, progress, text, 1, true);
+    private void renderSubText(String text, int row) {
+        InformedLoadUtils.textRenderer.draw(text, window.getScaledWidth() / 2f - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, window.getScaledHeight() - (row + 1) * 20, 0);
     }
     private void runLoad(File runDirectory) {
+        progressBars.clear();
+        ProgressBar overall = createProgressBar(0, ProgressBar.SplitType.NONE);
+        progressBars.add(overall);
+        overall.setText("Instancing Mods");
         FabricLoader.INSTANCE.instantiateMods(runDirectory, this);
+        overall.setText("Locating Entrypoints");
+        ProgressBar entrypointBar = createProgressBar(1, ProgressBar.SplitType.NONE);
+        entrypointBar.setText("Starting");
         Map<String, ModMetadata> mainToMeta = new HashMap<>();
         Map<String, ModMetadata> clientToMeta = new HashMap<>();
-        for (net.fabricmc.loader.api.ModContainer modContainer : FabricLoader.INSTANCE.getAllMods()) {
+        ArrayList<net.fabricmc.loader.api.ModContainer> newArrayList = Lists.newArrayList(FabricLoader.INSTANCE.getAllMods());
+        for (int i = 0; i < newArrayList.size(); i++) {
+            net.fabricmc.loader.api.ModContainer modContainer = newArrayList.get(i);
             ModMetadata metadata = modContainer.getMetadata();
-            System.out.println("Mod Discovered: " + metadata.getName() + "(" + metadata.getId() + ")");
+            entrypointBar.setText(i + "/" + newArrayList.size() + " - " + metadata.getName() + " (" + metadata.getId() + ")");
             if (modContainer instanceof ModContainer) {
                 ModContainer mod = (ModContainer) modContainer;
                 for (EntrypointMetadata entrypoint : mod.getInfo().getEntrypoints("main")) {
@@ -80,37 +80,55 @@ public class Modloader {
                 }
             }
         }
+        progressBars.remove(entrypointBar);
+        ProgressBar mainEntrypoints = createProgressBar(1, ProgressBar.SplitType.LEFT);
+        mainEntrypoints.setText(mainToMeta.size() + " Common");
+        ProgressBar clientEntrypoints = createProgressBar(1, ProgressBar.SplitType.RIGHT);
+        clientEntrypoints.setText(clientToMeta.size() + " Client");
+
         AtomicInteger index = new AtomicInteger();
         BiConsumer<Object, Boolean> runInitializer = (initializer, client) -> {
             index.set(index.get() + 1);
+            subText1 = "";
+            subText2 = "";
             long timeStart = new Date().getTime();
             String id = initializer.getClass().getName();
             ModMetadata metadata = (client ? clientToMeta : mainToMeta).get(id);
-            String ownerString = null;
             if (metadata != null) {
-                ownerString = metadata.getName() + " (" + metadata.getId() + ")";
+                subText1 = metadata.getName() + " (" + metadata.getId() + ")";
+            } else {
+                subText1 = "UNKNOWN MOD";
             }
-            //--status.get().accept("Running " + (client ? "client" : "") + " initializer " + id + " for mod " + ownerString);
-            //System.out.println("Attempting to run " + (client ? "client" : "") + " initializer " + id + " for mod " + ownerString);
-            //renderStatusText(ownerString);
-            mod = ownerString;
-            this.id = id;
-            //render();
-            if (client) ((ClientModInitializer)initializer).onInitializeClient();
-            else ((ModInitializer)initializer).onInitialize();
-            long timeEnd = new Date().getTime();
-            System.out.println("Ran " + (client ? "client" : "") + " initializer " + id + " for mod " + ownerString + " (" + (timeEnd - timeStart) + " ms)");
+            subText2 = id;
 
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (client) {
+                ((ClientModInitializer)initializer).onInitializeClient();
+                clientEntrypoints.setText(index.get() + "/" + clientToMeta.size() + " Client");
+                clientEntrypoints.setProgress((float)(index.get()) / clientToMeta.size());
+                overall.setProgress((1f/2f) + 0.25f + (((float)(index.get()) / clientToMeta.size()) / 4f));
+            } else {
+                ((ModInitializer)initializer).onInitialize();
+                mainEntrypoints.setText(index.get() + "/" + mainToMeta.size() + " Common");
+                mainEntrypoints.setProgress((float)(index.get()) / mainToMeta.size());
+                overall.setProgress((1f/2f) + (((float)(index.get()) / mainToMeta.size()) / 4f));
             }
-
-
         };
+        overall.setText("Creating Render Callbacks");
+        overall.setProgress(1f/2f);
+        overall.setText("Running Entrypoints - Common");
+        progressBars.add(mainEntrypoints);
+        progressBars.add(clientEntrypoints);
         InformedLoadUtils.logInitErrors("main", FabricLoader.INSTANCE.getEntrypoints("main", ModInitializer.class), initializer -> runInitializer.accept(initializer, false));
+        overall.setText("Running Entrypoints - Client");
+        index.set(0);
         InformedLoadUtils.logInitErrors("client", FabricLoader.INSTANCE.getEntrypoints("client", ClientModInitializer.class), initializer -> runInitializer.accept(initializer, true));
+        progressBars.remove(mainEntrypoints);
+        progressBars.remove(clientEntrypoints);
+        overall.setText("Starting Minecraft");
+        overall.setProgress(1);
         keepRendering = false;
+    }
+    public ProgressBar createProgressBar(int row, ProgressBar.SplitType splitType) {
+        return ProgressBar.createProgressBar(window, (row + 4) * 20, splitType);
     }
 }

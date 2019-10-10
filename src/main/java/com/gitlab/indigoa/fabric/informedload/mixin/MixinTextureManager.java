@@ -20,10 +20,10 @@ import java.util.concurrent.Executor;
 public class MixinTextureManager {
     @Inject(method = "reload", at = @At("INVOKE"))
     public void startReloadCheck(ResourceReloadListener.Synchronizer resourceReloadListener$Synchronizer_1, ResourceManager resourceManager_1, Profiler profiler_1, Profiler profiler_2, Executor executor_1, Executor executor_2, CallbackInfoReturnable ci) {
-        System.out.println("started reloading textures");
+        //System.out.println("started reloading textures");
     }
     @Inject(method = "method_18167", at = @At("INVOKE"))
     public void actuallyLoadTextures(ResourceManager resourceManager, Executor executor, Void idkWhatThisIsFor, CallbackInfo ci) {
-        System.out.println("actually reloading textures");
+        //System.out.println("actually reloading textures");
     }
 }

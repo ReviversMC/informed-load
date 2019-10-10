@@ -56,20 +56,6 @@ public abstract class MixinMinecraftClient {
 
     @Shadow public Window window;
 
-    @Shadow public TextRenderer textRenderer;
-
-    @Inject(method = "start", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;init()V"))
-    private void beforeInit(CallbackInfo ci) {
-        System.out.println("B4 Init");
-        /*FabricLoader.INSTANCE.getEntrypoints("main", ModInitializer.class).forEach(it -> {
-            try {
-                Method method = it.getClass().getMethod("onInitialize");
-                method.
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            }
-        });*/
-    }
     @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/fabricmc/loader/entrypoint/hooks/EntrypointClient;start(Ljava/io/File;Ljava/lang/Object;)V", remap = false))
     private void start(File runDir, Object gameInstance) {
         // You aint doin nothin fabric
@@ -112,15 +98,6 @@ public abstract class MixinMinecraftClient {
         GlStateManager.matrixMode(5888);
 
         GlStateManager.viewport(0, 0, this.window.getFramebufferWidth(), this.window.getFramebufferHeight());
-
-
-
-
-
-
-
-
-
 
         //if (this.options.language != null) {
         //    this.textRenderer.setRightToLeft(this.languageManager.isRightToLeft());
