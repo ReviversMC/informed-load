@@ -6,24 +6,19 @@ import net.minecraft.client.util.Window;
 import java.awt.Color;
 
 
-public class ProgressBar {
+public abstract class ProgressBar {
     public enum SplitType {
         NONE, LEFT, RIGHT
     }
-    protected int x, y, xm, ym;
     protected float progress = 0;
     protected String text = null;
     protected Color outer, inner;
-    public ProgressBar(int x, int y, int xm, Color outer, Color inner) {
-        this.x = x;
-        this.y = y;
-        this.xm = xm;
-        this.ym = y + 10;
+    public ProgressBar(Color outer, Color inner) {
         this.outer = outer;
         this.inner = inner;
     }
-    public ProgressBar(int x, int y, int xm) {
-        this(x, y, xm, Color.WHITE, new Color(226, 40, 55));
+    public ProgressBar() {
+        this(Color.WHITE, new Color(226, 40, 55));
     }
     public void setText(String text) {
         this.text = text;
@@ -37,17 +32,29 @@ public class ProgressBar {
     public float getProgress() {
         return progress;
     }
-    public void render() {
-        InformedLoadUtils.makeProgressBar(x, y, xm, ym, progress, text, 1, outer, inner);
+    public void render(Window window) {
+        InformedLoadUtils.makeProgressBar(getX(window), getY(window), getMaxX(window), getY(window) + 10, progress, text, 1, outer, inner);
     }
+    protected abstract int getX(Window window);
+    protected abstract int getMaxX(Window window);
+    protected abstract int getY(Window window);
     public static ProgressBar createProgressBar(Window window, int y, SplitType splitType) {
-        switch (splitType) {
-            case LEFT:
-                return new ProgressBar(window.getScaledWidth() / 2 - 150, y, window.getScaledWidth() / 2 - 5);
-            case RIGHT:
-                return new ProgressBar(window.getScaledWidth() / 2 + 5, y, window.getScaledWidth() / 2 + 150);
-            default:
-                return new ProgressBar(window.getScaledWidth() / 2 - 150, y, window.getScaledWidth() / 2 + 150);
-        }
+        return new ProgressBar() {
+
+            @Override
+            protected int getX(Window window) {
+                return window.getScaledWidth() / 2 + (splitType == SplitType.RIGHT ? 5 : -150);
+            }
+
+            @Override
+            protected int getMaxX(Window window) {
+                return window.getScaledWidth() / 2 + (splitType == SplitType.LEFT ? -5 : 150);
+            }
+
+            @Override
+            protected int getY(Window window) {
+                return window.getScaledHeight() / 2 + y;
+            }
+        };
     }
 }

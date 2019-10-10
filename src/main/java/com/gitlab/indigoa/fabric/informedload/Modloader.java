@@ -45,7 +45,7 @@ public class Modloader {
         GlStateManager.ortho(0.0D, window.getScaledWidth(), window.getScaledHeight(), 0.0D, -1000.0D, 1000.0D);
         for (int i = 0; i < progressBars.size(); i++) {
             ProgressBar progressBar = progressBars.get(i);
-            progressBar.render();
+            progressBar.render(window);
         }
         renderSubText(subText2, 0);
         renderSubText(subText1, 1);
@@ -53,7 +53,7 @@ public class Modloader {
         glfwPollEvents();
     }
     private void renderSubText(String text, int row) {
-        InformedLoadUtils.textRenderer.draw(text, window.getScaledWidth() / 2f - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, window.getScaledHeight() - (row + 1) * 20, 0x888888);
+        InformedLoadUtils.textRenderer.draw(text, window.getScaledWidth() / 2f - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, window.getScaledHeight() - (row + 1) * 20, 0x666666);
     }
     private void runLoad(File runDirectory) {
         progressBars.clear();
@@ -123,6 +123,8 @@ public class Modloader {
         progressBars.add(clientEntrypoints);
         total.set(mainToMeta.size());
         InformedLoadUtils.logInitErrors("main", FabricLoader.INSTANCE.getEntrypoints("main", ModInitializer.class), initializer -> runInitializer.accept(initializer, false));
+        mainEntrypoints.setProgress(1);
+        mainEntrypoints.setText("Common Complete");
         overall.setText("Running Entrypoints - Client");
         index.set(0);
         total.set(clientToMeta.size());
@@ -134,6 +136,6 @@ public class Modloader {
         keepRendering = false;
     }
     public ProgressBar createProgressBar(int row, ProgressBar.SplitType splitType) {
-        return ProgressBar.createProgressBar(window, (row + 6) * 20, splitType);
+        return ProgressBar.createProgressBar(window, row * 20, splitType);
     }
 }
