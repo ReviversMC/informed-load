@@ -50,8 +50,9 @@ public class Modloader {
         GlStateManager.clear(16640, MinecraftClient.IS_SYSTEM_MAC);
         GlStateManager.loadIdentity();
         GlStateManager.ortho(0.0D, window.getScaledWidth(), window.getScaledHeight(), 0.0D, -1000.0D, 1000.0D);
-        GlStateManager.enableBlend();
+        //GlStateManager.enableBlend();
         textureManager.bindTexture(LOGO);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0f);
         DrawableHelper.blit((window.getScaledWidth() - 256) / 2, (window.getScaledHeight() - 256) / 2 - 30, 0, 0, 0, 256, 256, 256, 256);
         for (int i = 0; i < progressBars.size(); i++) {
             ProgressBar progressBar = progressBars.get(i);
