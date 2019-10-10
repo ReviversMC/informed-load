@@ -142,6 +142,8 @@ public class Modloader {
         InformedLoadUtils.logInitErrors("client", FabricLoader.INSTANCE.getEntrypoints("client", ClientModInitializer.class), initializer -> runInitializer.accept(initializer, true));
         progressBars.remove(mainEntrypoints);
         progressBars.remove(clientEntrypoints);
+        subText1 = "";
+        subText2 = "";
         overall.setText("Starting Minecraft");
         overall.setProgress(1);
         keepRendering = false;
