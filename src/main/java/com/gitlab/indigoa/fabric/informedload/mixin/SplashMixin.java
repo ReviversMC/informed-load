@@ -33,14 +33,13 @@ public abstract class SplashMixin extends Overlay {
     private void renderProgressBar(int int_1, int int_2, int int_3, int int_4, float float_1, float float_2) {}
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/SplashScreen;blit(IIIIII)V"))
     public void translateLogo(SplashScreen dis, int x, int y, int idk1, int idk2, int idk3, int idk4) {
-        blit(x, y - 30, idk1, idk2, idk3,  idk4);
+        blit(x, y - 40, idk1, idk2, idk3,  idk4);
     }
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/SplashScreen;renderProgressBar(IIIIFF)V"))
     public void swapProgressRender(SplashScreen dis, int x, int y, int end_x, int end_y, float progress, float fadeAmount) {
         int window_width = this.client.window.getScaledWidth();
         int window_height = this.client.window.getScaledHeight();
-        y = -30 + window_height / 4 * 3;
-        int text_height = 8;
+        y = window_height / 4 * 3 - 40;
         int middle_x = window_width / 2;
 
         String status = "Loading";

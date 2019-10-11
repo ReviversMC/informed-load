@@ -53,7 +53,7 @@ public class Modloader {
         //GlStateManager.enableBlend();
         textureManager.bindTexture(LOGO);
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0f);
-        DrawableHelper.blit((window.getScaledWidth() - 256) / 2, (window.getScaledHeight() - 256) / 2 - 30, 0, 0, 0, 256, 256, 256, 256);
+        DrawableHelper.blit((window.getScaledWidth() - 256) / 2, (window.getScaledHeight() - 256) / 2 - 40, 0, 0, 0, 256, 256, 256, 256);
         for (int i = 0; i < progressBars.size(); i++) {
             ProgressBar progressBar = progressBars.get(i);
             progressBar.render(window);
@@ -150,6 +150,11 @@ public class Modloader {
         keepRendering = false;
     }
     public ProgressBar createProgressBar(int row, ProgressBar.SplitType splitType) {
-        return ProgressBar.createProgressBar(window, row * 20 + window.getScaledHeight() / 4 - 30, splitType);
+        return new ProgressBar.SplitProgressBar(splitType) {
+            @Override
+            protected int getY(Window window) {
+                return row * 20 + window.getScaledHeight() / 4 * 3 - 40;
+            }
+        };
     }
 }

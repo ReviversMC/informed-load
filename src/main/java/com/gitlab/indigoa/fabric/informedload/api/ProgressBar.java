@@ -38,23 +38,19 @@ public abstract class ProgressBar {
     protected abstract int getX(Window window);
     protected abstract int getMaxX(Window window);
     protected abstract int getY(Window window);
-    public static ProgressBar createProgressBar(Window window, int y, SplitType splitType) {
-        return new ProgressBar() {
+    public static abstract class SplitProgressBar extends ProgressBar {
+        public SplitProgressBar(SplitType splitType) {
+            this.splitType = splitType;
+        }
+        public SplitType splitType;
+        @Override
+        protected int getX(Window window) {
+            return window.getScaledWidth() / 2 + (splitType == SplitType.RIGHT ? 5 : -150);
+        }
 
-            @Override
-            protected int getX(Window window) {
-                return window.getScaledWidth() / 2 + (splitType == SplitType.RIGHT ? 5 : -150);
-            }
-
-            @Override
-            protected int getMaxX(Window window) {
-                return window.getScaledWidth() / 2 + (splitType == SplitType.LEFT ? -5 : 150);
-            }
-
-            @Override
-            protected int getY(Window window) {
-                return window.getScaledHeight() / 2 + y;
-            }
-        };
+        @Override
+        protected int getMaxX(Window window) {
+            return window.getScaledWidth() / 2 + (splitType == SplitType.LEFT ? -5 : 150);
+        }
     }
 }
