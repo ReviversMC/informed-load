@@ -1,7 +1,7 @@
-package com.gitlab.indigoa.fabric.informedload.mixin;
+package io.github.indicode.fabric.informedload.mixin;
 
-import com.gitlab.indigoa.fabric.informedload.InformedLoadUtils;
-import com.gitlab.indigoa.fabric.informedload.TaskList;
+import io.github.indicode.fabric.informedload.InformedLoadUtils;
+import io.github.indicode.fabric.informedload.TaskList;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.resource.ResourceManager;

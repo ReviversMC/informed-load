@@ -1,14 +1,12 @@
-package com.gitlab.indigoa.fabric.informedload.mixin;
+package io.github.indicode.fabric.informedload.mixin;
 
-import com.gitlab.indigoa.fabric.informedload.TaskList;
+import io.github.indicode.fabric.informedload.TaskList;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.Registry;

@@ -1,8 +1,8 @@
-package com.gitlab.indigoa.fabric.informedload.mixin; /**
+package io.github.indicode.fabric.informedload.mixin; /**
  * @author Indigo A.
  */
 
-import com.gitlab.indigoa.fabric.informedload.IProgressTracker;
+import io.github.indicode.fabric.informedload.IProgressTracker;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.client.gui.WorldGenerationProgressTracker;
 import net.minecraft.server.WorldGenerationProgressLogger;

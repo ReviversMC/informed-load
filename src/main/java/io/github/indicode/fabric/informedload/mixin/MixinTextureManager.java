@@ -1,4 +1,4 @@
-package com.gitlab.indigoa.fabric.informedload.mixin;
+package io.github.indicode.fabric.informedload.mixin;
 
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.resource.ResourceManager;

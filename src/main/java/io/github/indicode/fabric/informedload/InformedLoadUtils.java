@@ -1,4 +1,4 @@
-package com.gitlab.indigoa.fabric.informedload;
+package io.github.indicode.fabric.informedload;
 
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;

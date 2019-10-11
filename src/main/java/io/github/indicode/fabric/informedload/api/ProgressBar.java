@@ -1,6 +1,6 @@
-package com.gitlab.indigoa.fabric.informedload.api;
+package io.github.indicode.fabric.informedload.api;
 
-import com.gitlab.indigoa.fabric.informedload.InformedLoadUtils;
+import io.github.indicode.fabric.informedload.InformedLoadUtils;
 import net.minecraft.client.util.Window;
 
 import java.awt.Color;

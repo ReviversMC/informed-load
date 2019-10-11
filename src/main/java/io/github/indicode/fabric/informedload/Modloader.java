@@ -1,6 +1,6 @@
-package com.gitlab.indigoa.fabric.informedload;
+package io.github.indicode.fabric.informedload;
 
-import com.gitlab.indigoa.fabric.informedload.api.ProgressBar;
+import io.github.indicode.fabric.informedload.api.ProgressBar;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.fabricmc.api.ClientModInitializer;
@@ -14,9 +14,7 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.Window;
 import net.minecraft.util.Identifier;
-import org.lwjgl.opengl.GL14;
 
-import java.awt.*;
 import java.io.File;
 import java.util.*;
 import java.util.List;
@@ -25,7 +23,6 @@ import java.util.function.BiConsumer;
 
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.opengl.GL11.*;
 
 public class Modloader {
     private static final Identifier LOGO = new Identifier("textures/gui/title/mojang.png");
@@ -75,6 +72,7 @@ public class Modloader {
         overall.setText("Locating Entrypoints");
         ProgressBar entrypointBar = createProgressBar(1, ProgressBar.SplitType.NONE);
         entrypointBar.setText("Starting");
+        progressBars.add(entrypointBar);
         Map<String, ModMetadata> mainToMeta = new HashMap<>();
         Map<String, ModMetadata> clientToMeta = new HashMap<>();
         ArrayList<net.fabricmc.loader.api.ModContainer> newArrayList = Lists.newArrayList(FabricLoader.INSTANCE.getAllMods());

@@ -1,8 +1,8 @@
-package com.gitlab.indigoa.fabric.informedload.mixin;
+package io.github.indicode.fabric.informedload.mixin;
 
-import com.gitlab.indigoa.fabric.informedload.IProgressLogger;
-import com.gitlab.indigoa.fabric.informedload.IProgressTracker;
-import com.gitlab.indigoa.fabric.informedload.InformedLoadUtils;
+import io.github.indicode.fabric.informedload.IProgressLogger;
+import io.github.indicode.fabric.informedload.IProgressTracker;
+import io.github.indicode.fabric.informedload.InformedLoadUtils;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.LevelLoadingScreen;
 import net.minecraft.client.gui.WorldGenerationProgressTracker;
