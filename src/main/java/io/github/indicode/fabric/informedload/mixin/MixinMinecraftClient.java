@@ -46,8 +46,8 @@ public abstract class MixinMinecraftClient {
 
     @Shadow public Window window;
 
-    @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/fabricmc/loader/entrypoint/hooks/EntrypointClient;start(Ljava/io/File;Ljava/lang/Object;)V", remap = false))
-    private void start(File runDir, Object gameInstance) {
+    @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/fabricmc/loader/entrypoint/minecraft/hooks/EntrypointClient;start(Ljava/io/File;Ljava/lang/Object;)V", remap = false))
+    private void stopFabricInit(File runDir, Object gameInstance) {
         // You aint doin nothin fabric
     }
     // Note: this reference works because fabric loader creates it with ASM - do not delete
