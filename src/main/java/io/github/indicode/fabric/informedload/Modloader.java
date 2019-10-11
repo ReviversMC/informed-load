@@ -1,5 +1,6 @@
 package io.github.indicode.fabric.informedload;
 
+import com.mojang.blaze3d.platform.GLX;
 import io.github.indicode.fabric.informedload.api.ProgressBar;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -59,6 +60,9 @@ public class Modloader {
         renderSubText(subText1, 1);
         glfwSwapBuffers(window.getHandle());
         glfwPollEvents();
+        if (GLX.shouldClose(this.window)) {
+            client.stop();
+        }
     }
     private void renderSubText(String text, int row) {
         InformedLoadUtils.textRenderer.draw(text, window.getScaledWidth() / 2f - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, window.getScaledHeight() - (row + 1) * 20, 0x666666);
