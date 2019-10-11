@@ -1,4 +1,4 @@
-package com.gitlab.indigoa.fabric.informedload;
+package io.github.indicode.fabric.informedload;
 
 import io.github.prospector.modmenu.api.ModMenuApi;
 import me.sargunvohra.mcmods.autoconfig1.AutoConfig;

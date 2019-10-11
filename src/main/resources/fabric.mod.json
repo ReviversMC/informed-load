@@ -9,9 +9,9 @@
     "Indicode"
   ],
   "contact": {
-    "homepage": "https://minecraft.curseforge.com/projects/informed-load-fabric",
-    "sources": "https://github.com/Indi-Code/Informed-Load-Minecraft-Fabric-",
-    "issues": "https://github.com/Indi-Code/Informed-Load-Minecraft-Fabric-/issues"
+    "homepage": "https://minecraft.curseforge.com/projects/informed-load",
+    "sources": "https://github.com/Indi-Code/Informed-Load",
+    "issues": "https://github.com/Indi-Code/Informed-Load/issues"
   },
   "custom": {
     "modmenu:clientsideOnly": true
@@ -23,10 +23,10 @@
   "environment": "client",
   "entrypoints": {
     "modmenu": [
-      "com.gitlab.indigoa.fabric.informedload.ModMenuIntegration"
+      "io.github.indicode.fabric.informedload.ModMenuIntegration"
     ],
     "main": [
-      "com.gitlab.indigoa.fabric.informedload.InformedLoadUtils"
+      "io.github.indicode.fabric.informedload.InformedLoadUtils"
     ]
   },
 

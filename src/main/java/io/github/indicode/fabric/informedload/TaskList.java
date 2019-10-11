@@ -1,4 +1,4 @@
-package com.gitlab.indigoa.fabric.informedload;
+package io.github.indicode.fabric.informedload;
 
 import net.minecraft.client.resource.language.I18n;
 

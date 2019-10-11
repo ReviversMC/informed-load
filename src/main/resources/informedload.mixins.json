@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "com.gitlab.indigoa.fabric.informedload.mixin",
+  "package": "io.github.indicode.fabric.informedload.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
 

@@ -1,4 +1,4 @@
-package com.gitlab.indigoa.fabric.informedload;
+package io.github.indicode.fabric.informedload;
 
 import me.sargunvohra.mcmods.autoconfig1.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1.annotation.ConfigEntry;

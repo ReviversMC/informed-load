@@ -1,4 +1,4 @@
-package com.gitlab.indigoa.fabric.informedload;
+package io.github.indicode.fabric.informedload;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
