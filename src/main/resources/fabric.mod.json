@@ -31,13 +31,8 @@
   },
 
 
-  "requires": {
-    "fabricloader": ">=0.4.0",
-    "fabric": "*",
-    "fabric-language-kotlin": ">=1.3.30"
-  },
-  "suggests": {
-    "flamingo": "*"
+  "depends": {
+    "fabricloader": ">=0.6.1"
   },
   "mixins": [
     "informedload.mixins.json"
