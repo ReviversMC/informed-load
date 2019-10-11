@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.2.2-SNAPSHOT'
+	id 'fabric-loom' version '0.2.5-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -26,6 +26,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}"
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 	modCompile "cloth-config:ClothConfig:${project.cloth_config_version}"
+	include "cloth-config:ClothConfig:${project.cloth_config_version}"
 	modCompile "me.sargunvohra.mcmods:auto-config:${project.auto_config_version}"
 	include "me.sargunvohra.mcmods:auto-config:${project.auto_config_version}"
 	
@@ -35,7 +36,7 @@ dependencies {
 	//modCompile "com.jamieswhiteshirt:developer-mode:1.0.11" // developer mode mod
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
-	//modCompile "net.fabricmc:fabric:${project.fabric_version}" I Don't need it
+	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
