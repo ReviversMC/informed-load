@@ -54,11 +54,11 @@ public abstract class MixinMinecraftClient {
     private void stopFabricInit(File runDir, Object gameInstance) {
         AutoConfig.register(Config.class, Toml4jConfigSerializer::new);
         InformedLoadUtils.config = AutoConfig.getConfigHolder(Config.class).getConfig();
-        System.out.println(InformedLoadUtils.config.entrypointDisplay);
         if (!InformedLoadUtils.config.entrypointDisplay) {
             EntrypointClient.start(runDir, gameInstance);
+        } else {
+            Modloader.getInstance(runDirectory).loadExcludedEntrypoints();
         }
-        // You aint doin nothin fabric
     }
     // Note: this reference works because fabric loader creates it with ASM - do not delete
     @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;callCreators()V"))
@@ -66,7 +66,7 @@ public abstract class MixinMinecraftClient {
         if (InformedLoadUtils.config.entrypointDisplay) {
             ReloadableResourceManagerImpl resourceManager = new ReloadableResourceManagerImpl(ResourceType.CLIENT_RESOURCES, this.thread);
             this.resourcePackContainerManager.callCreators();
-            List<ResourcePack> list_1 = (List) this.resourcePackContainerManager.getEnabledContainers().stream().map(ResourcePackContainer::createResourcePack).collect(Collectors.toList());
+            List<ResourcePack> list_1 = this.resourcePackContainerManager.getEnabledContainers().stream().map(ResourcePackContainer::createResourcePack).collect(Collectors.toList());
             Iterator var8 = list_1.iterator();
             while (var8.hasNext()) {
                 ResourcePack resourcePack_1 = (ResourcePack) var8.next();
@@ -108,7 +108,7 @@ public abstract class MixinMinecraftClient {
                 fontStorage_1.setFonts(Collections.singletonList(FontType.BITMAP.createLoader(new JsonParser().parse(InformedLoadUtils.FONT_JSON).getAsJsonObject()).load(resourceManager)));
                 InformedLoadUtils.textRenderer = new TextRenderer(textureManager, fontStorage_1);
             }
-            new Modloader().loadMods((MinecraftClient) (Object) this, textureManager, window, runDirectory);
+            Modloader.getInstance(runDirectory).loadMods(textureManager, window);
         }
     }
 }

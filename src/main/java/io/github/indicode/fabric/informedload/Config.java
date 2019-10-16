@@ -19,8 +19,6 @@ public class Config implements ConfigData {
     public boolean entrypointDisplay = true;
     @Comment("Entrypoints to exclude from display (Will happen before screen opens)")
     public List<String> excludedEntrypoints = new ArrayList<>();
-    @Comment("Mods in this list will have all entrypoints excluded (Will happen before screen opens)")
-    public List<String> excludedEntrypointMods = new ArrayList<>();
     @ConfigEntry.Category("splash")
     @Comment("Model add progress bars")
     public SplitType splash_splitProgressBars = SplitType.SPLIT;
