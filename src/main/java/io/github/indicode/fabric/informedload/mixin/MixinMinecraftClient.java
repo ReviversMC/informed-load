@@ -1,9 +1,13 @@
 package io.github.indicode.fabric.informedload.mixin;
 
+import io.github.indicode.fabric.informedload.Config;
 import io.github.indicode.fabric.informedload.InformedLoadUtils;
 import io.github.indicode.fabric.informedload.Modloader;
 import com.google.gson.JsonParser;
 import com.mojang.blaze3d.platform.GlStateManager;
+import me.sargunvohra.mcmods.autoconfig1.AutoConfig;
+import me.sargunvohra.mcmods.autoconfig1.serializer.Toml4jConfigSerializer;
+import net.fabricmc.loader.entrypoint.minecraft.hooks.EntrypointClient;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.FontManager;
 import net.minecraft.client.font.FontStorage;
@@ -48,55 +52,63 @@ public abstract class MixinMinecraftClient {
 
     @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/fabricmc/loader/entrypoint/minecraft/hooks/EntrypointClient;start(Ljava/io/File;Ljava/lang/Object;)V", remap = false))
     private void stopFabricInit(File runDir, Object gameInstance) {
+        AutoConfig.register(Config.class, Toml4jConfigSerializer::new);
+        InformedLoadUtils.config = AutoConfig.getConfigHolder(Config.class).getConfig();
+        System.out.println(InformedLoadUtils.config.entrypointDisplay);
+        if (!InformedLoadUtils.config.entrypointDisplay) {
+            EntrypointClient.start(runDir, gameInstance);
+        }
         // You aint doin nothin fabric
     }
     // Note: this reference works because fabric loader creates it with ASM - do not delete
     @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;callCreators()V"))
     private void moveModload(ResourcePackContainerManager resourcePackContainerManager) {
-        ReloadableResourceManagerImpl resourceManager = new ReloadableResourceManagerImpl(ResourceType.CLIENT_RESOURCES, this.thread);
-        this.resourcePackContainerManager.callCreators();
-        List<ResourcePack> list_1 = (List)this.resourcePackContainerManager.getEnabledContainers().stream().map(ResourcePackContainer::createResourcePack).collect(Collectors.toList());
-        Iterator var8 = list_1.iterator();
-        while(var8.hasNext()) {
-            ResourcePack resourcePack_1 = (ResourcePack)var8.next();
-            resourceManager.addPack(resourcePack_1);
+        if (InformedLoadUtils.config.entrypointDisplay) {
+            ReloadableResourceManagerImpl resourceManager = new ReloadableResourceManagerImpl(ResourceType.CLIENT_RESOURCES, this.thread);
+            this.resourcePackContainerManager.callCreators();
+            List<ResourcePack> list_1 = (List) this.resourcePackContainerManager.getEnabledContainers().stream().map(ResourcePackContainer::createResourcePack).collect(Collectors.toList());
+            Iterator var8 = list_1.iterator();
+            while (var8.hasNext()) {
+                ResourcePack resourcePack_1 = (ResourcePack) var8.next();
+                resourceManager.addPack(resourcePack_1);
+            }
+
+            LanguageManager languageManager = new LanguageManager(this.options.language);
+            resourceManager.registerListener(languageManager);
+            languageManager.reloadResources(list_1);
+            TextureManager textureManager = new TextureManager(resourceManager);
+            this.onResolutionChanged();
+            FontManager fontManager = new FontManager(textureManager, forcesUnicodeFont());
+            resourceManager.registerListener(fontManager.getResourceReloadListener());
+            TextRenderer textRenderer = fontManager.getTextRenderer(DEFAULT_TEXT_RENDERER_ID);
+            //if (this.options.language != null) {
+            //    this.textRenderer.setRightToLeft(this.languageManager.isRightToLeft());
+            //}
+
+            GlStateManager.enableTexture();
+            GlStateManager.shadeModel(7425);
+            GlStateManager.clearDepth(1.0D);
+            GlStateManager.enableDepthTest();
+            GlStateManager.depthFunc(515);
+            GlStateManager.enableAlphaTest();
+            GlStateManager.alphaFunc(516, 0.1F);
+            GlStateManager.cullFace(GlStateManager.FaceSides.BACK);
+            GlStateManager.matrixMode(5889);
+            GlStateManager.loadIdentity();
+            GlStateManager.matrixMode(5888);
+
+            GlStateManager.viewport(0, 0, this.window.getFramebufferWidth(), this.window.getFramebufferHeight());
+
+            //if (this.options.language != null) {
+            //    this.textRenderer.setRightToLeft(this.languageManager.isRightToLeft());
+            //}
+            if (InformedLoadUtils.textRenderer == null) {
+                MinecraftClient client = (MinecraftClient) (Object) this;
+                final FontStorage fontStorage_1 = new FontStorage(textureManager, new Identifier("loading"));
+                fontStorage_1.setFonts(Collections.singletonList(FontType.BITMAP.createLoader(new JsonParser().parse(InformedLoadUtils.FONT_JSON).getAsJsonObject()).load(resourceManager)));
+                InformedLoadUtils.textRenderer = new TextRenderer(textureManager, fontStorage_1);
+            }
+            new Modloader().loadMods((MinecraftClient) (Object) this, textureManager, window, runDirectory);
         }
-
-        LanguageManager languageManager = new LanguageManager(this.options.language);
-        resourceManager.registerListener(languageManager);
-        languageManager.reloadResources(list_1);
-        TextureManager textureManager = new TextureManager(resourceManager);
-        this.onResolutionChanged();
-        FontManager fontManager = new FontManager(textureManager, forcesUnicodeFont());
-        resourceManager.registerListener(fontManager.getResourceReloadListener());
-        TextRenderer textRenderer = fontManager.getTextRenderer(DEFAULT_TEXT_RENDERER_ID);
-        //if (this.options.language != null) {
-        //    this.textRenderer.setRightToLeft(this.languageManager.isRightToLeft());
-        //}
-
-        GlStateManager.enableTexture();
-        GlStateManager.shadeModel(7425);
-        GlStateManager.clearDepth(1.0D);
-        GlStateManager.enableDepthTest();
-        GlStateManager.depthFunc(515);
-        GlStateManager.enableAlphaTest();
-        GlStateManager.alphaFunc(516, 0.1F);
-        GlStateManager.cullFace(GlStateManager.FaceSides.BACK);
-        GlStateManager.matrixMode(5889);
-        GlStateManager.loadIdentity();
-        GlStateManager.matrixMode(5888);
-
-        GlStateManager.viewport(0, 0, this.window.getFramebufferWidth(), this.window.getFramebufferHeight());
-
-        //if (this.options.language != null) {
-        //    this.textRenderer.setRightToLeft(this.languageManager.isRightToLeft());
-        //}
-        if (InformedLoadUtils.textRenderer == null) {
-            MinecraftClient client = (MinecraftClient)(Object) this;
-            final FontStorage fontStorage_1 = new FontStorage(textureManager, new Identifier("loading"));
-            fontStorage_1.setFonts(Collections.singletonList(FontType.BITMAP.createLoader(new JsonParser().parse(InformedLoadUtils.FONT_JSON).getAsJsonObject()).load(resourceManager)));
-            InformedLoadUtils.textRenderer = new TextRenderer(textureManager, fontStorage_1);
-        }
-        new Modloader().loadMods((MinecraftClient)(Object) this, textureManager, window, runDirectory);
     }
 }

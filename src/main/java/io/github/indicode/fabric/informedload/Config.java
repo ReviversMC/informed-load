@@ -4,6 +4,9 @@ import me.sargunvohra.mcmods.autoconfig1.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1.annotation.ConfigEntry;
 import me.sargunvohra.mcmods.autoconfig1.shadowed.blue.endless.jankson.Comment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Indigo Amann
  */
@@ -12,6 +15,12 @@ public class Config implements ConfigData {
     public static enum SplitType {
         SPLIT, IN_ORDER, SINGLE
     }
+    @Comment("Display entrypoint loading")
+    public boolean entrypointDisplay = true;
+    @Comment("Entrypoints to exclude from display (Will happen before screen opens)")
+    public List<String> excludedEntrypoints = new ArrayList<>();
+    @Comment("Mods in this list will have all entrypoints excluded (Will happen before screen opens)")
+    public List<String> excludedEntrypointMods = new ArrayList<>();
     @ConfigEntry.Category("splash")
     @Comment("Model add progress bars")
     public SplitType splash_splitProgressBars = SplitType.SPLIT;

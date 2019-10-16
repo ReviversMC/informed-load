@@ -86,8 +86,7 @@ public class InformedLoadUtils implements ModInitializer {
     public static Consumer<Object[]> renderProgressBar = null;
     @Override
     public void onInitialize() {
-        AutoConfig.register(Config.class, Toml4jConfigSerializer::new);
-        config = AutoConfig.getConfigHolder(Config.class).getConfig();
+
     }
     public static int spritesToLoad;
     private static final Object2IntMap<ChunkStatus> STATUS_TO_COLOR_SIMPLIFIED = (Object2IntMap) SystemUtil.consume(new Object2IntOpenHashMap(), (object2IntOpenHashMap_1) -> {
