@@ -8,6 +8,7 @@ import com.google.gson.JsonParser;
 import com.mojang.blaze3d.platform.GlStateManager;
 import me.sargunvohra.mcmods.autoconfig1.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1.ConfigManager;
+import me.sargunvohra.mcmods.autoconfig1.serializer.JanksonConfigSerializer;
 import me.sargunvohra.mcmods.autoconfig1.serializer.Toml4jConfigSerializer;
 import net.fabricmc.loader.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -59,7 +60,7 @@ public abstract class MixinMinecraftClient {
 
     @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/fabricmc/loader/entrypoint/minecraft/hooks/EntrypointClient;start(Ljava/io/File;Ljava/lang/Object;)V", remap = false))
     private void stopFabricInit(File runDir, Object gameInstance) {
-        AutoConfig.register(Config.class, Toml4jConfigSerializer::new);
+        AutoConfig.register(Config.class, JanksonConfigSerializer::new);
         InformedLoadUtils.config = AutoConfig.getConfigHolder(Config.class).getConfig();
         if (InformedLoadUtils.config.printEntrypoints) {
             InformedLoadUtils.config.printEntrypoints = false;
