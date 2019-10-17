@@ -98,8 +98,8 @@ public abstract class MixinMinecraftClient {
         }
     }
     // Note: this reference works because fabric loader creates it with ASM - do not delete
-    @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;callCreators()V"))
-    private void moveModload(ResourcePackContainerManager resourcePackContainerManager) {
+    @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/options/GameOptions;addResourcePackContainersToManager(Lnet/minecraft/resource/ResourcePackContainerManager;)V"))
+    private void moveModload(GameOptions gameOptions, ResourcePackContainerManager<ClientResourcePackContainer> resourcePackContainerManager_1) {
         if (InformedLoadUtils.config.entrypointDisplay) {
             ReloadableResourceManagerImpl resourceManager = new ReloadableResourceManagerImpl(ResourceType.CLIENT_RESOURCES, this.thread);
             this.resourcePackContainerManager.callCreators();
