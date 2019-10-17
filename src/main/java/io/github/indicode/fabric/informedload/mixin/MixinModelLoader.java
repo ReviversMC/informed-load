@@ -88,6 +88,10 @@ public class MixinModelLoader {
         taskBakeModels = new TaskList.Task.TaskBakeModels(modelsToBake.size());
         TaskList.addTask(taskBakeModels);
     }
+    @Inject(method = "upload(Lnet/minecraft/util/profiler/Profiler;)V", at = @At("RETURN"))
+    private void removeBakeTask(Profiler profiler, CallbackInfo ci) {
+        TaskList.removeTask(taskBakeModels.id);
+    }
 
     @Inject(method = "bake(Lnet/minecraft/util/Identifier;Lnet/minecraft/client/render/model/ModelBakeSettings;)Lnet/minecraft/client/render/model/BakedModel;", at = @At("RETURN"))
     private void listProgressModelBake(Identifier identifier_1, ModelBakeSettings modelBakeSettings_1, CallbackInfoReturnable ci) {
