@@ -11,5 +11,7 @@
     "text.autoconfig.informedload.option.worldload_loveDisplay.bigChunkViewer": "Bigger Chunkload Viewer",
     "text.autoconfig.informedload.option.worldload_loveDisplay.showProgressBar": "Show Progress Bar",
     "text.autoconfig.informedload.option.worldload_hateDisplay.progressBarDisplay": "Use Progress Bars Instead",
-    "text.autoconfig.informedload.option.worldload_loveDisplay.simplifyColors": "Make Viewer Easier to Read"
+    "text.autoconfig.informedload.option.worldload_loveDisplay.simplifyColors": "Make Viewer Easier to Read",
+    "text.autoconfig.informedload.option.entrypointDisplay": "Show Entrypoint Loading",
+    "text.autoconfig.informedload.option.printEntrypoints": "Log entrypoints (Debug)"
 }

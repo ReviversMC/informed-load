@@ -15,13 +15,13 @@ public class Config implements ConfigData {
     public static enum SplitType {
         SPLIT, IN_ORDER, SINGLE
     }
-    @ConfigEntry.Category("entrypoint")
+    @ConfigEntry.Category("splash")
     @Comment("Display entrypoint loading")
     public boolean entrypointDisplay = true;
-    @ConfigEntry.Category("entrypoint")
+    @ConfigEntry.Category("splash")
     @Comment("If informed load has conflicts, run this to figure out what entrypoints go to what mods, so you can disable them")
     public boolean printEntrypoints = false;
-    @ConfigEntry.Category("entrypoint")
+    @ConfigEntry.Category("splash")
     @Comment("Entrypoints to exclude from display (Will happen before screen opens)")
     public List<String> excludedEntrypoints = new ArrayList<>();
     @ConfigEntry.Category("splash")
