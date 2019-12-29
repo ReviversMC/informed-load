@@ -134,21 +134,21 @@ public class MixinWorldGenProgress  {
                     pliquid_carvers = liquid_carvers > totals ? totals : liquid_carvers, pfeatures = features > totals ? totals : features,
                     plight = light > totals ? totals : light;
             int py = y - 110;
-            InformedLoadUtils.makeProgressBar(x - 150, py, x + 150, py + 10, pbiomes / totals, "Biomes: " + biomes + "/" + (int)totals, 1, outer, inner);
+            InformedLoadUtils.makeProgressBar(x - 150, py, x + 150, py + 10, pbiomes / totals, "Biomes: " + biomes + "/" + (int)totals, outer.getRGB(), inner.getRGB());
             py += 20;
-            InformedLoadUtils.makeProgressBar(x - 150, py, x + 150, py + 10, pnoise / totals, "Noise: " + noise + "/" + (int)totals, 1, outer, inner);
+            InformedLoadUtils.makeProgressBar(x - 150, py, x + 150, py + 10, pnoise / totals, "Noise: " + noise + "/" + (int)totals, outer.getRGB(), inner.getRGB());
             py += 20;
-            InformedLoadUtils.makeProgressBar(x - 150, py, x + 150, py + 10, psurface / totals, "Surface: " + surface + "/" + (int)totals, 1, outer, inner);
+            InformedLoadUtils.makeProgressBar(x - 150, py, x + 150, py + 10, psurface / totals, "Surface: " + surface + "/" + (int)totals, outer.getRGB(), inner.getRGB());
             py += 20;
-            InformedLoadUtils.makeProgressBar(x - 150, py, x + 150, py + 10, pcarvers / totals, "Carvers: " + carvers + "/" + (int)totals, 1, outer, inner);
+            InformedLoadUtils.makeProgressBar(x - 150, py, x + 150, py + 10, pcarvers / totals, "Carvers: " + carvers + "/" + (int)totals, outer.getRGB(), inner.getRGB());
             py += 20;
-            InformedLoadUtils.makeProgressBar(x - 150, py, x + 150, py + 10, pliquid_carvers / totals, "Liquid Carvers: " + liquid_carvers + "/" + (int)totals, 1, outer, inner);
+            InformedLoadUtils.makeProgressBar(x - 150, py, x + 150, py + 10, pliquid_carvers / totals, "Liquid Carvers: " + liquid_carvers + "/" + (int)totals, outer.getRGB(), inner.getRGB());
             py += 20;
-            InformedLoadUtils.makeProgressBar(x - 150, py, x + 150, py + 10, pfeatures / totals, "Features: " + features + "/" + (int)totals, 1, outer, inner);
+            InformedLoadUtils.makeProgressBar(x - 150, py, x + 150, py + 10, pfeatures / totals, "Features: " + features + "/" + (int)totals, outer.getRGB(), inner.getRGB());
             py += 20;
-            InformedLoadUtils.makeProgressBar(x - 150, py, x + 150, py + 10, plight / totals, "Light: " + light + "/" + (int)totals, 1, outer, inner);
+            InformedLoadUtils.makeProgressBar(x - 150, py, x + 150, py + 10, plight / totals, "Light: " + light + "/" + (int)totals, outer.getRGB(), inner.getRGB());
             py += 30;
-            InformedLoadUtils.makeProgressBar(x - 150, py, x + 150, py + 10, full / totals, "Fully Loaded: " + full + "/" + (int)totals + " - " + (int)((full/totals)*100) + "%", 1, outer, new Color(182, 220, 182));
+            InformedLoadUtils.makeProgressBar(x - 150, py, x + 150, py + 10, full / totals, "Fully Loaded: " + full + "/" + (int)totals + " - " + (int)((full/totals)*100) + "%", outer.getRGB(), new Color(182, 220, 182).getRGB());
         }
     }
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/LevelLoadingScreen;drawCenteredString(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"))
@@ -161,7 +161,7 @@ public class MixinWorldGenProgress  {
             if (InformedLoadUtils.config.worldload_loveDisplay.showProgressBar) {
                 y += 95;
                 if (InformedLoadUtils.config.worldload_loveDisplay.bigChunkViewer) y += 30;
-                InformedLoadUtils.makeProgressBar(x - 150, y, x + 150, y + 10, progressProvider.getProgressPercentage() / 100f, done + "/" + totals + " Chunks Loaded - " + string_1, 1, Color.DARK_GRAY, Color.LIGHT_GRAY);
+                InformedLoadUtils.makeProgressBar(x - 150, y, x + 150, y + 10, progressProvider.getProgressPercentage() / 100f, done + "/" + totals + " Chunks Loaded - " + string_1, Color.DARK_GRAY.getRGB(), Color.LIGHT_GRAY.getRGB());
             } else {
                 LevelLoadingScreen.drawCenteredString(textRenderer_1, string_1, x, y, int_3);
             }

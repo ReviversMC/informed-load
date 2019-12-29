@@ -50,7 +50,7 @@ public abstract class SplashMixin extends Overlay {
                 status += " - " + ((TaskList.Task) iterator.next()).name;
             }
         }
-        InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, this.progress, status, 1/*fadeAmaount*/, false);
+        InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, this.progress, status);
         y += 20;
         if (!TaskList.isEmpty()) {
             Iterator iterator = TaskList.iterator();

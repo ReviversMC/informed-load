@@ -33,7 +33,7 @@ public abstract class ProgressBar {
         return progress;
     }
     public void render(Window window) {
-        InformedLoadUtils.makeProgressBar(getX(window), getY(window), getMaxX(window), getY(window) + 10, progress, text, outer, inner);
+        InformedLoadUtils.makeProgressBar(getX(window), getY(window), getMaxX(window), getY(window) + 10, progress, text, outer.getRGB(), inner.getRGB());
     }
     protected abstract int getX(Window window);
     protected abstract int getMaxX(Window window);

@@ -32,7 +32,7 @@ public class TaskList {
             public int render(int y, int middle_x, int window_width, int window_height, float fadeAmount) {
                 String name = stage == 0 ? "Adding to Bakery" : stage == 1 ? "Stitching Textures" : "Baking";
                 if (InformedLoadUtils.config.splash_maxProgressBarRows > 1) {
-                    InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, (stage / 3f) + (stagePercentage / 3f), (stage + 1) + "/3 - " + name, fadeAmount, false);
+                    InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, (stage / 3f) + (stagePercentage / 3f), (stage + 1) + "/3 - " + name);
                 }
                 return y + 20;
             }
@@ -51,7 +51,7 @@ public class TaskList {
             public int render(int y, int middle_x, int window_width, int window_height, float fadeAmount) {
                 String name = stage == 0 ? "Preparing" : stage == 1 ? "Extracting Frames" : stage == 2 ? "Mipmapping" : stage == 3 ? "Stitching" : "Loading";
                 if (InformedLoadUtils.config.splash_maxProgressBarRows > 2) {
-                    InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, (stage / 5f) + (subPercentage / 5f), (stage + 1) + "/5 - " + extra + name, fadeAmount, false);
+                    InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, (stage / 5f) + (subPercentage / 5f), (stage + 1) + "/5 - " + extra + name);
                 }
                 TaskLoadModels.INSTANCE.stagePercentage = (stage / 5f) + (subPercentage / 5f);
                 return y + 20;
@@ -85,15 +85,15 @@ public class TaskList {
                 if (blocks > blocks_o) blocks = blocks_o;  // Hasn't happened yet - but just to make sure
                 if (InformedLoadUtils.config.splash_maxProgressBarRows > 2) {
                     if (InformedLoadUtils.config.splash_splitProgressBars == Config.SplitType.SPLIT) {
-                        InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 - 5, y + 10, (float) blocks / (float) blocks_o, blocks + "/" + blocks_o + " Blocks Added", fadeAmount, false);
-                        InformedLoadUtils.makeProgressBar(window_width / 2 + 5, y, window_width / 2 + 150, y + 10, (float) items / (float) items_o, items + "/" + items_o + " Items Added", fadeAmount, false);
+                        InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 - 5, y + 10, (float) blocks / (float) blocks_o, blocks + "/" + blocks_o + " Blocks Added");
+                        InformedLoadUtils.makeProgressBar(window_width / 2 + 5, y, window_width / 2 + 150, y + 10, (float) items / (float) items_o, items + "/" + items_o + " Items Added");
                     } else if (InformedLoadUtils.config.splash_splitProgressBars == Config.SplitType.SINGLE) {
-                        InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, (float) (blocks + items) / (float) (blocks_o + items_o), blocks + "/" + blocks_o + " Blocks Added - " + items + "/" + items_o + " Items Added", fadeAmount, false);
+                        InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, (float) (blocks + items) / (float) (blocks_o + items_o), blocks + "/" + blocks_o + " Blocks Added - " + items + "/" + items_o + " Items Added");
                     } else {
                         if (blocks < blocks_o) {
-                            InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, (float) blocks / (float) blocks_o, blocks + "/" + blocks_o + " Blocks Added", fadeAmount, false);
+                            InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, (float) blocks / (float) blocks_o, blocks + "/" + blocks_o + " Blocks Added");
                         } else {
-                            InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, (float) items / (float) items_o, items + "/" + items_o + " Items Added", fadeAmount, false);
+                            InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, (float) items / (float) items_o, items + "/" + items_o + " Items Added");
                         }
                     }
                 }
@@ -120,7 +120,7 @@ public class TaskList {
             public int render(int y, int middle_x, int window_width, int window_height, float fadeAmount) {
                 if (baked > tobake) baked = tobake; // Hasn't happened yet - but just to make sure
                 if (InformedLoadUtils.config.splash_maxProgressBarRows > 2) {
-                    InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, (float) baked / (float) tobake, baked + "/" + tobake + " Models Baked", fadeAmount, false);
+                    InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, (float) baked / (float) tobake, baked + "/" + tobake + " Models Baked");
                 }
                 TaskLoadModels.INSTANCE.stagePercentage = (float) baked / tobake;
                 y += 20;

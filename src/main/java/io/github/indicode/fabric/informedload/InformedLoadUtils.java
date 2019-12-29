@@ -55,27 +55,15 @@ public class InformedLoadUtils implements ModInitializer {
     public static int findMiddle(int a, int b) {
         return (a + b) / 2;
     }
-    public static void makeProgressBar(int x, int y, int end_x, int end_y, float progress, String text, float fadeAmount, boolean vanilla) {
-        //if (vanilla || config.splash_forceVanillaProgressBars) {
-            //makeProgressBar(x, y, end_x, end_y, progress, text, Color.WHITE, Color.RED);
-        //} else {
-            renderProgressBar.accept(new Object[]{x, y, end_x, end_y, progress});
-        //}
-        //Text
-        //InformedLoadUtils.textRenderer.draw(text, InformedLoadUtils.findMiddle(x + 1, end_x - 1) - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, y + 1, end_y - y - 2);
-    }
     public static void makeProgressBar(int x, int y, int end_x, int end_y, float progress, String text) {
-        makeProgressBar(x, y, end_x, end_y, progress, text, 1, false);
+        makeProgressBar(x, y, end_x, end_y, progress, text, Color.WHITE.getRGB(), new Color(226, 40, 55).getRGB());
     }
-    public static void makeProgressBar(int x, int y, int end_x, int end_y, float progress, String text, float fadeAmount, Color outer, Color inner) {
-        makeProgressBar(x, y, end_x, end_y, progress, text, 1, false);
-    }
-    public static void makeProgressBar(int minX, int minY, int maxX, int maxY, float progress, String text, Color outer, Color inner) {
-        int percent = MathHelper.ceil((float)(maxX - minX - 1) * progress);
+    public static void makeProgressBar(int minX, int minY, int maxX, int maxY, float progress, String text, int outer, int inner) {
+        int percent = MathHelper.ceil((float)(maxX - minX - 2) * progress);
 
-        fill(minX - 1, minY - 1, maxX + 1, maxY + 1, -16777216 | Math.round((1.0F - progress) * 255.0F) << 16 | Math.round((1.0F - progress) * 255.0F) << 8 | Math.round((1.0F - progress) * 255.0F));
-        fill(minX, minY, maxX, maxY, -1);
-        fill(minX + 1, minY + 1, minX + percent, maxY - 1, -16777216 | (int)MathHelper.lerp(1.0F - progress, 226.0F, 255.0F) << 16 | (int)MathHelper.lerp(1.0F - progress, 40.0F, 255.0F) << 8 | (int)MathHelper.lerp(1.0F - progress, 55.0F, 255.0F));
+        fill(minX - 1, minY - 1, maxX + 1, maxY + 1, Color.black.getRGB());
+        fill(minX, minY, maxX, maxY, outer);
+        fill(minX + 1, minY + 1, minX + percent, maxY - 1, inner);
         //Text
         //InformedLoadUtils.textRenderer.draw(text, InformedLoadUtils.findMiddle(minX + 1, maxX - 1) - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, minY + 1, maxY - minY - 2);
     }
