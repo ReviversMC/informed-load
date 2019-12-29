@@ -9,7 +9,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import me.sargunvohra.mcmods.autoconfig1.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1.ConfigManager;
 import me.sargunvohra.mcmods.autoconfig1.serializer.JanksonConfigSerializer;
-import me.sargunvohra.mcmods.autoconfig1.serializer.Toml4jConfigSerializer;
 import net.fabricmc.loader.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
@@ -21,7 +20,7 @@ import net.minecraft.client.font.FontStorage;
 import net.minecraft.client.font.FontType;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.options.GameOptions;
-import net.minecraft.client.resource.ClientResourcePackContainer;
+import net.minecraft.client.resource.ClientResourcePackProfile;
 import net.minecraft.client.resource.language.LanguageManager;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.Window;
@@ -31,7 +30,9 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ import static net.minecraft.client.MinecraftClient.DEFAULT_TEXT_RENDERER_ID;
 public abstract class MixinMinecraftClient {
     @Shadow @Final public File runDirectory;
 
-    @Shadow @Final private ResourcePackContainerManager<ClientResourcePackContainer> resourcePackContainerManager;
+    @Shadow @Final private ResourcePackManager<ClientResourcePackProfile> resourcePackManager;
 
     @Shadow public abstract void onResolutionChanged();
 
@@ -58,7 +59,12 @@ public abstract class MixinMinecraftClient {
 
     @Shadow public Window window;
 
-    @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/fabricmc/loader/entrypoint/minecraft/hooks/EntrypointClient;start(Ljava/io/File;Ljava/lang/Object;)V", remap = false))
+    @Shadow @Final public TextRenderer textRenderer;
+
+    @Shadow @Final private TextureManager textureManager;
+
+    // Note: this reference works because fabric loader creates it with ASM - do not delete
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/fabricmc/loader/entrypoint/minecraft/hooks/EntrypointClient;start(Ljava/io/File;Ljava/lang/Object;)V", remap = false))
     private void stopFabricInit(File runDir, Object gameInstance) {
         AutoConfig.register(Config.class, JanksonConfigSerializer::new);
         InformedLoadUtils.config = AutoConfig.getConfigHolder(Config.class).getConfig();
@@ -97,25 +103,23 @@ public abstract class MixinMinecraftClient {
             Modloader.getInstance(runDirectory).loadExcludedEntrypoints();
         }
     }
-    // Note: this reference works because fabric loader creates it with ASM - do not delete
-    @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/options/GameOptions;addResourcePackContainersToManager(Lnet/minecraft/resource/ResourcePackContainerManager;)V"))
-    private void moveModload(GameOptions gameOptions, ResourcePackContainerManager<ClientResourcePackContainer> resourcePackContainerManager_1) {
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/options/GameOptions;addResourcePackProfilesToManager(Lnet/minecraft/resource/ResourcePackManager;)V"))
+    private void moveModload(GameOptions gameOptions, ResourcePackManager<ClientResourcePackProfile> manager) {
         if (InformedLoadUtils.config.entrypointDisplay) {
             ReloadableResourceManagerImpl resourceManager = new ReloadableResourceManagerImpl(ResourceType.CLIENT_RESOURCES, this.thread);
-            this.resourcePackContainerManager.callCreators();
-            List<ResourcePack> list_1 = this.resourcePackContainerManager.getEnabledContainers().stream().map(ResourcePackContainer::createResourcePack).collect(Collectors.toList());
-            Iterator var8 = list_1.iterator();
-            while (var8.hasNext()) {
-                ResourcePack resourcePack_1 = (ResourcePack) var8.next();
+            //this.resourcePackContainerManager.callCreators();
+            manager.scanPacks();
+            List<ResourcePack> list_1 = manager.getEnabledProfiles().stream().map(ResourcePackProfile::createResourcePack).collect(Collectors.toList());
+            for (ResourcePack resourcePack_1 : list_1) {
                 resourceManager.addPack(resourcePack_1);
             }
 
             LanguageManager languageManager = new LanguageManager(this.options.language);
             resourceManager.registerListener(languageManager);
             languageManager.reloadResources(list_1);
-            TextureManager textureManager = new TextureManager(resourceManager);
-            this.onResolutionChanged();
-            FontManager fontManager = new FontManager(textureManager, forcesUnicodeFont());
+            InformedLoadUtils.textureManager = new TextureManager(resourceManager);
+            //this.onResolutionChanged();
+            FontManager fontManager = new FontManager(InformedLoadUtils.textureManager, forcesUnicodeFont());
             resourceManager.registerListener(fontManager.getResourceReloadListener());
             TextRenderer textRenderer = fontManager.getTextRenderer(DEFAULT_TEXT_RENDERER_ID);
             //if (this.options.language != null) {
@@ -129,7 +133,7 @@ public abstract class MixinMinecraftClient {
             GlStateManager.depthFunc(515);
             GlStateManager.enableAlphaTest();
             GlStateManager.alphaFunc(516, 0.1F);
-            GlStateManager.cullFace(GlStateManager.FaceSides.BACK);
+            //GlStateManager.cullFace(GlStateManager.FaceSides.BACK);
             GlStateManager.matrixMode(5889);
             GlStateManager.loadIdentity();
             GlStateManager.matrixMode(5888);
@@ -140,12 +144,18 @@ public abstract class MixinMinecraftClient {
             //    this.textRenderer.setRightToLeft(this.languageManager.isRightToLeft());
             //}
             if (InformedLoadUtils.textRenderer == null) {
-                MinecraftClient client = (MinecraftClient) (Object) this;
-                final FontStorage fontStorage_1 = new FontStorage(textureManager, new Identifier("loading"));
+                final FontStorage fontStorage_1 = new FontStorage(InformedLoadUtils.textureManager, new Identifier("loading"));
                 fontStorage_1.setFonts(Collections.singletonList(FontType.BITMAP.createLoader(new JsonParser().parse(InformedLoadUtils.FONT_JSON).getAsJsonObject()).load(resourceManager)));
-                InformedLoadUtils.textRenderer = new TextRenderer(textureManager, fontStorage_1);
+                InformedLoadUtils.textRenderer = new TextRenderer(InformedLoadUtils.textureManager, fontStorage_1);
             }
-            Modloader.getInstance(runDirectory).loadMods(textureManager, window);
+            System.out.println(InformedLoadUtils.textRenderer);
+            Modloader.getInstance(runDirectory).loadMods(InformedLoadUtils.textureManager, window);
+        }
+    }
+    @Inject(method = "getTextureManager", at = @At("HEAD"), cancellable = true)
+    public void getILTextureManager(CallbackInfoReturnable<TextureManager> cir) {
+        if (textureManager == null) {
+            cir.setReturnValue(InformedLoadUtils.textureManager);
         }
     }
 }

@@ -1,4 +1,4 @@
-package io.github.indicode.fabric.informedload;
+/*package io.github.indicode.fabric.informedload;
 
 import io.github.prospector.modmenu.api.ModMenuApi;
 import me.sargunvohra.mcmods.autoconfig1.AutoConfig;
@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 /**
  * @author Indigo Amann
- */
+ *
 @Environment(EnvType.CLIENT)
 public class ModMenuIntegration implements ModMenuApi {
     public ModMenuIntegration() {
@@ -27,3 +27,4 @@ public class ModMenuIntegration implements ModMenuApi {
         return (Function<Screen, Screen>) screen -> AutoConfig.getConfigScreen(Config.class, screen).get();
     }
 }
+*/

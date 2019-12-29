@@ -57,7 +57,7 @@ public class Modloader {
     private List<String> alreadyLoadedMains = new ArrayList<>();
     private List<String> alreadyLoadedClients = new ArrayList<>();
     private void loadInstances() {
-        if (!instancesLoaded) FabricLoader.INSTANCE.instantiateMods(runDirectory, client);
+        if (!instancesLoaded) FabricLoader.INSTANCE.prepareModInit(runDirectory, client);
         instancesLoaded = true;
     }
     public void loadExcludedEntrypoints() {
@@ -100,7 +100,7 @@ public class Modloader {
         renderSubText(subText1, 1);
         glfwSwapBuffers(window.getHandle());
         glfwPollEvents();
-        if (GLX.shouldClose(this.window)) {
+        if (GLX._shouldClose(this.window)) {
             client.stop();
         }
     }
