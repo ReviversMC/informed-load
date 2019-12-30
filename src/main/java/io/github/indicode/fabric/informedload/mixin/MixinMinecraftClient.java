@@ -114,7 +114,7 @@ public abstract class MixinMinecraftClient {
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;registerListener(Lnet/minecraft/resource/ResourceReloadListener;)V", ordinal = 9))
     private void moveModload(ReloadableResourceManager reloadableResourceManager, ResourceReloadListener listener) {
         if (InformedLoadUtils.config.entrypointDisplay) {
-            ReloadableResourceManagerImpl resourceManager = new ReloadableResourceManagerImpl(ResourceType.CLIENT_RESOURCES, this.thread);
+            ReloadableResourceManagerImpl resourceManager = (ReloadableResourceManagerImpl) reloadableResourceManager;
             resourcePackManager.scanPacks();
             List<ResourcePack> list_1 = resourcePackManager.getEnabledProfiles().stream().map(ResourcePackProfile::createResourcePack).collect(Collectors.toList());
             for (ResourcePack resourcePack_1 : list_1) {
@@ -135,9 +135,9 @@ public abstract class MixinMinecraftClient {
             FontManager fontManager = new FontManager(InformedLoadUtils.textureManager, forcesUnicodeFont());
             resourceManager.registerListener(fontManager.getResourceReloadListener());
 
-            if (this.options.language != null) {
-                this.textRenderer.setRightToLeft(languageManager.isRightToLeft());
-            }
+            //if (this.options.language != null) {
+               // this.textRenderer.setRightToLeft(languageManager.isRightToLeft());
+            //}
             if (InformedLoadUtils.textRenderer == null) {
                 final FontStorage fontStorage_1 = new FontStorage(getTextureManager(), new Identifier("loading"));
                 fontStorage_1.setFonts(Collections.singletonList(FontType.BITMAP.createLoader(new JsonParser().parse(InformedLoadUtils.FONT_JSON).getAsJsonObject()).load(resourceManager)));
