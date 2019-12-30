@@ -14,12 +14,14 @@ import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.entrypoint.minecraft.hooks.EntrypointClient;
 import net.fabricmc.loader.metadata.EntrypointMetadata;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.FontManager;
 import net.minecraft.client.font.FontStorage;
 import net.minecraft.client.font.FontType;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.gui.screen.SplashScreen;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.resource.ClientResourcePackProfile;
 import net.minecraft.client.resource.language.LanguageManager;
@@ -27,6 +29,8 @@ import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.Window;
 import net.minecraft.resource.*;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Unit;
+import net.minecraft.util.Util;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -40,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static net.minecraft.client.MinecraftClient.DEFAULT_TEXT_RENDERER_ID;
@@ -69,6 +74,8 @@ public abstract class MixinMinecraftClient {
     @Shadow @Final public static boolean IS_SYSTEM_MAC;
 
     @Shadow public abstract TextureManager getTextureManager();
+
+    @Shadow @Final private static CompletableFuture<Unit> COMPLETED_UNIT_FUTURE;
 
     // Note: this reference works because fabric loader creates it with ASM - do not delete
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/fabricmc/loader/entrypoint/minecraft/hooks/EntrypointClient;start(Ljava/io/File;Ljava/lang/Object;)V", remap = false))
@@ -116,14 +123,16 @@ public abstract class MixinMinecraftClient {
         if (InformedLoadUtils.config.entrypointDisplay) {
             ReloadableResourceManagerImpl resourceManager = (ReloadableResourceManagerImpl) reloadableResourceManager;
             resourcePackManager.scanPacks();
-            List<ResourcePack> list_1 = resourcePackManager.getEnabledProfiles().stream().map(ResourcePackProfile::createResourcePack).collect(Collectors.toList());
-            for (ResourcePack resourcePack_1 : list_1) {
+            List<ResourcePack> list = resourcePackManager.getEnabledProfiles().stream().map(ResourcePackProfile::createResourcePack).collect(Collectors.toList());
+            for (ResourcePack resourcePack_1 : list) {
                 resourceManager.addPack(resourcePack_1);
             }
+            /*List<ResourcePack> list = (List)this.resourcePackManager.getEnabledProfiles().stream().map(ResourcePackProfile::createResourcePack).collect(Collectors.toList());
+            resourceManager.beginMonitoredReload(Util.getServerWorkerExecutor(), (MinecraftClient)(Object)this, COMPLETED_UNIT_FUTURE, list);*/
 
             LanguageManager languageManager = new LanguageManager(this.options.language);
             resourceManager.registerListener(languageManager);
-            languageManager.reloadResources(list_1);
+            languageManager.reloadResources(list);
             InformedLoadUtils.textureManager = new TextureManager(resourceManager);
 
             int i = this.window.calculateScaleFactor(this.options.guiScale, this.forcesUnicodeFont());
@@ -138,12 +147,11 @@ public abstract class MixinMinecraftClient {
             //if (this.options.language != null) {
                // this.textRenderer.setRightToLeft(languageManager.isRightToLeft());
             //}
-            if (InformedLoadUtils.textRenderer == null) {
+            //if (InformedLoadUtils.textRenderer == null) {
                 final FontStorage fontStorage_1 = new FontStorage(getTextureManager(), new Identifier("loading"));
                 fontStorage_1.setFonts(Collections.singletonList(FontType.BITMAP.createLoader(new JsonParser().parse(InformedLoadUtils.FONT_JSON).getAsJsonObject()).load(resourceManager)));
                 InformedLoadUtils.textRenderer = new TextRenderer(getTextureManager(), fontStorage_1);
-            }
-            System.out.println(InformedLoadUtils.textRenderer);
+            //}
             Modloader.getInstance(runDirectory).loadMods(InformedLoadUtils.textureManager, window);
         }
     }

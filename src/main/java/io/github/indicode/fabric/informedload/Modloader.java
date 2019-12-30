@@ -1,6 +1,7 @@
 package io.github.indicode.fabric.informedload;
 
 import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.indicode.fabric.informedload.api.ProgressBar;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -84,10 +85,12 @@ public class Modloader {
     }
     Window window;
     public void render() {
+        GlStateManager.pushMatrix();
         GlStateManager.clearColor(1.0f, 1.0f, 1.0f, 1.0f);
         GlStateManager.clear(16640, MinecraftClient.IS_SYSTEM_MAC);
         GlStateManager.loadIdentity();
         GlStateManager.ortho(0.0D, window.getScaledWidth(), window.getScaledHeight(), 0.0D, -1000.0D, 1000.0D);
+        RenderSystem.matrixMode(5888);
         //GlStateManager.enableBlend();
         textureManager.bindTexture(LOGO);
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0f);
@@ -98,6 +101,7 @@ public class Modloader {
         }
         renderSubText(subText2, 0);
         renderSubText(subText1, 1);
+        GlStateManager.popMatrix();
         glfwSwapBuffers(window.getHandle());
         glfwPollEvents();
         if (GLX._shouldClose(this.window)) {
@@ -105,7 +109,7 @@ public class Modloader {
         }
     }
     private void renderSubText(String text, int row) {
-        //InformedLoadUtils.textRenderer.draw(text, window.getScaledWidth() / 2f - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, window.getScaledHeight() - (row + 1) * 20, 0x666666);
+        InformedLoadUtils.textRenderer.draw(text, window.getScaledWidth() / 2f - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, window.getScaledHeight() - (row + 1) * 20, 0x666666);
     }
     private void runLoad() {
         System.out.println("in basic load");
