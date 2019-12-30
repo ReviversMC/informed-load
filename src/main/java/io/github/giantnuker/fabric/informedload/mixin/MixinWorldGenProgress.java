@@ -1,8 +1,8 @@
-package io.github.indicode.fabric.informedload.mixin;
+package io.github.giantnuker.fabric.informedload.mixin;
 
-import io.github.indicode.fabric.informedload.IProgressLogger;
-import io.github.indicode.fabric.informedload.IProgressTracker;
-import io.github.indicode.fabric.informedload.InformedLoadUtils;
+import io.github.giantnuker.fabric.informedload.IProgressTracker;
+import io.github.giantnuker.fabric.informedload.IProgressLogger;
+import io.github.giantnuker.fabric.informedload.InformedLoadUtils;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.LevelLoadingScreen;
 import net.minecraft.client.gui.WorldGenerationProgressTracker;

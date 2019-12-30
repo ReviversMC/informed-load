@@ -1,7 +1,7 @@
-package io.github.indicode.fabric.informedload.mixin;
+package io.github.giantnuker.fabric.informedload.mixin;
 
-import io.github.indicode.fabric.informedload.InformedLoadUtils;
-import io.github.indicode.fabric.informedload.TaskList;
+import io.github.giantnuker.fabric.informedload.TaskList;
+import io.github.giantnuker.fabric.informedload.InformedLoadUtils;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.resource.ResourceManager;

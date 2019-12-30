@@ -1,6 +1,6 @@
-package io.github.indicode.fabric.informedload.api;
+package io.github.giantnuker.fabric.informedload.api;
 
-import io.github.indicode.fabric.informedload.InformedLoadUtils;
+import io.github.giantnuker.fabric.informedload.InformedLoadUtils;
 import net.minecraft.client.util.Window;
 
 import java.awt.Color;

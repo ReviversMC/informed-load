@@ -1,4 +1,4 @@
-package io.github.indicode.fabric.informedload;
+package io.github.giantnuker.fabric.informedload;
 
 import me.sargunvohra.mcmods.autoconfig1.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1.annotation.ConfigEntry;

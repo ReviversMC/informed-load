@@ -1,4 +1,4 @@
-package io.github.indicode.fabric.informedload;
+package io.github.giantnuker.fabric.informedload;
 
 /**
  * @author Indigo A.

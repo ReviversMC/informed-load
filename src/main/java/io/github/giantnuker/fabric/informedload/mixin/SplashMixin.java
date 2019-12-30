@@ -1,8 +1,8 @@
-package io.github.indicode.fabric.informedload.mixin;
+package io.github.giantnuker.fabric.informedload.mixin;
 
-import io.github.indicode.fabric.informedload.InformedLoadUtils;
+import io.github.giantnuker.fabric.informedload.InformedLoadUtils;
 import com.google.gson.JsonParser;
-import io.github.indicode.fabric.informedload.TaskList;
+import io.github.giantnuker.fabric.informedload.TaskList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.FontStorage;
 import net.minecraft.client.font.FontType;

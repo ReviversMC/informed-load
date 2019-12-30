@@ -1,4 +1,4 @@
-package io.github.indicode.fabric.informedload.mixin;
+package io.github.giantnuker.fabric.informedload.mixin;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderPhase;

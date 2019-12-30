@@ -1,4 +1,4 @@
-package io.github.indicode.fabric.informedload;
+package io.github.giantnuker.fabric.informedload;
 
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;

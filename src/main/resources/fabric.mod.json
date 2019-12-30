@@ -23,7 +23,7 @@
   "environment": "client",
   "entrypoints": {
     "main": [
-      "io.github.indicode.fabric.informedload.InformedLoadUtils"
+      "io.github.giantnuker.fabric.informedload.InformedLoadUtils"
     ]
   },
 

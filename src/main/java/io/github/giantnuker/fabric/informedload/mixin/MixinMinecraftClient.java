@@ -1,12 +1,11 @@
-package io.github.indicode.fabric.informedload.mixin;
+package io.github.giantnuker.fabric.informedload.mixin;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.indicode.fabric.informedload.Config;
-import io.github.indicode.fabric.informedload.InformedLoadUtils;
-import io.github.indicode.fabric.informedload.Modloader;
+import io.github.giantnuker.fabric.informedload.Config;
+import io.github.giantnuker.fabric.informedload.InformedLoadUtils;
+import io.github.giantnuker.fabric.informedload.Modloader;
 import com.google.gson.JsonParser;
-import com.mojang.blaze3d.platform.GlStateManager;
 import me.sargunvohra.mcmods.autoconfig1.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1.ConfigManager;
 import me.sargunvohra.mcmods.autoconfig1.serializer.JanksonConfigSerializer;
@@ -15,14 +14,12 @@ import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.entrypoint.minecraft.hooks.EntrypointClient;
 import net.fabricmc.loader.metadata.EntrypointMetadata;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.FontManager;
 import net.minecraft.client.font.FontStorage;
 import net.minecraft.client.font.FontType;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.Framebuffer;
-import net.minecraft.client.gui.screen.SplashScreen;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.resource.ClientResourcePackProfile;
 import net.minecraft.client.resource.language.LanguageManager;
@@ -31,7 +28,6 @@ import net.minecraft.client.util.Window;
 import net.minecraft.resource.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Unit;
-import net.minecraft.util.Util;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -43,12 +39,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
-import static net.minecraft.client.MinecraftClient.DEFAULT_TEXT_RENDERER_ID;
 
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient {

@@ -1,8 +1,8 @@
-package io.github.indicode.fabric.informedload;
+package io.github.giantnuker.fabric.informedload;
 
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.indicode.fabric.informedload.api.ProgressBar;
+import io.github.giantnuker.fabric.informedload.api.ProgressBar;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.fabricmc.api.ClientModInitializer;

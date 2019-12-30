@@ -1,8 +1,8 @@
-package io.github.indicode.fabric.informedload.mixin; /**
+package io.github.giantnuker.fabric.informedload.mixin; /**
  * @author Indigo A.
  */
 
-import io.github.indicode.fabric.informedload.IProgressLogger;
+import io.github.giantnuker.fabric.informedload.IProgressLogger;
 import net.minecraft.server.WorldGenerationProgressLogger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;

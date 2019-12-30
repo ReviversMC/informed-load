@@ -1,6 +1,6 @@
-package io.github.indicode.fabric.informedload.mixin;
+package io.github.giantnuker.fabric.informedload.mixin;
 
-import io.github.indicode.fabric.informedload.TaskList;
+import io.github.giantnuker.fabric.informedload.TaskList;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.model.*;
 import net.minecraft.client.texture.TextureManager;
