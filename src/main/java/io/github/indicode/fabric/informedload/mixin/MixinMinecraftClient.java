@@ -120,6 +120,7 @@ public abstract class MixinMinecraftClient {
     //@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/options/GameOptions;addResourcePackProfilesToManager(Lnet/minecraft/resource/ResourcePackManager;)V"))
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;registerListener(Lnet/minecraft/resource/ResourceReloadListener;)V", ordinal = 9))
     private void moveModload(ReloadableResourceManager reloadableResourceManager, ResourceReloadListener listener) {
+        reloadableResourceManager.registerListener(listener);
         if (InformedLoadUtils.config.entrypointDisplay) {
             ReloadableResourceManagerImpl resourceManager = (ReloadableResourceManagerImpl) reloadableResourceManager;
             resourcePackManager.scanPacks();
