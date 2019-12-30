@@ -91,7 +91,7 @@ public class InformedLoadUtils implements ModInitializer {
         fill(minX, minY, maxX, maxY, outer);
         fill(minX + 1, minY + 1, minX + percent, maxY - 1, inner);
         //Text
-        //InformedLoadUtils.textRenderer.draw(text, InformedLoadUtils.findMiddle(minX + 1, maxX - 1) - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, minY + 1, maxY - minY - 2);
+        InformedLoadUtils.textRenderer.draw(text, InformedLoadUtils.findMiddle(minX + 1, maxX - 1) - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, minY + 1, maxY - minY - 2);
     }
     public static int fadeOut(Color color, float amount) {
         return fadeColor(color, Color.WHITE, amount).getRGB();
