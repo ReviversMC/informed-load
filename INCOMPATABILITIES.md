@@ -1,0 +1,1 @@
+Not Enough Crashes - NEC redirects the same thing as IL for fabric entrypoints
