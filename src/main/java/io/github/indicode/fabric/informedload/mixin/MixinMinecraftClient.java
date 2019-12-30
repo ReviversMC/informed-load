@@ -115,7 +115,6 @@ public abstract class MixinMinecraftClient {
     private void moveModload(ReloadableResourceManager reloadableResourceManager, ResourceReloadListener listener) {
         if (InformedLoadUtils.config.entrypointDisplay) {
             ReloadableResourceManagerImpl resourceManager = new ReloadableResourceManagerImpl(ResourceType.CLIENT_RESOURCES, this.thread);
-            //this.resourcePackContainerManager.callCreators();
             resourcePackManager.scanPacks();
             List<ResourcePack> list_1 = resourcePackManager.getEnabledProfiles().stream().map(ResourcePackProfile::createResourcePack).collect(Collectors.toList());
             for (ResourcePack resourcePack_1 : list_1) {
@@ -135,28 +134,10 @@ public abstract class MixinMinecraftClient {
 
             FontManager fontManager = new FontManager(InformedLoadUtils.textureManager, forcesUnicodeFont());
             resourceManager.registerListener(fontManager.getResourceReloadListener());
-            TextRenderer textRenderer = fontManager.getTextRenderer(DEFAULT_TEXT_RENDERER_ID);
-            //if (this.options.language != null) {
-            //    this.textRenderer.setRightToLeft(this.languageManager.isRightToLeft());
-            //}
 
-            GlStateManager.enableTexture();
-            GlStateManager.shadeModel(7425);
-            GlStateManager.clearDepth(1.0D);
-            GlStateManager.enableDepthTest();
-            GlStateManager.depthFunc(515);
-            GlStateManager.enableAlphaTest();
-            GlStateManager.alphaFunc(516, 0.1F);
-            //GlStateManager.cullFace(GlStateManager.FaceSides.BACK);
-            GlStateManager.matrixMode(5889);
-            GlStateManager.loadIdentity();
-            GlStateManager.matrixMode(5888);
-
-            GlStateManager.viewport(0, 0, this.window.getFramebufferWidth(), this.window.getFramebufferHeight());
-
-            //if (this.options.language != null) {
-            //    this.textRenderer.setRightToLeft(this.languageManager.isRightToLeft());
-            //}
+            if (this.options.language != null) {
+                this.textRenderer.setRightToLeft(languageManager.isRightToLeft());
+            }
             if (InformedLoadUtils.textRenderer == null) {
                 final FontStorage fontStorage_1 = new FontStorage(getTextureManager(), new Identifier("loading"));
                 fontStorage_1.setFonts(Collections.singletonList(FontType.BITMAP.createLoader(new JsonParser().parse(InformedLoadUtils.FONT_JSON).getAsJsonObject()).load(resourceManager)));
