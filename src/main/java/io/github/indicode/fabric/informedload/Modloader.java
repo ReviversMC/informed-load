@@ -45,7 +45,6 @@ public class Modloader {
         this.client = MinecraftClient.getInstance();
     }
     public void loadMods(TextureManager textureManager, Window window) {
-        System.out.println("ilm");
         this.window = window;
         this.textureManager = textureManager;
         Thread loaderThread = new Thread(() -> runLoad());
@@ -116,7 +115,6 @@ public class Modloader {
         InformedLoadUtils.textRenderer.draw(text, window.getScaledWidth() / 2f - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, window.getScaledHeight() - (row + 1) * 20, 0x666666);
     }
     private void runLoad() {
-        System.out.println("in basic load");
         progressBars.clear();
         ProgressBar overall = createProgressBar(0, ProgressBar.SplitType.NONE);
         progressBars.add(overall);
