@@ -47,6 +47,7 @@ public class InformedLoadUtils implements ModInitializer {
             return new SimpleMessage("[Informed Load] " + message);
         }
     });
+    public static boolean isDoingEarlyLoad = false;
     public static void logDebug(String message) {
         if (config.logDebugs) {
             InformedLoadUtils.LOGGER.info("[Debug] " + message);

@@ -61,12 +61,11 @@ public abstract class SplashMixin extends Overlay {
     }
     @Inject(method = "<init>", at = @At("RETURN"))
     public void setup(CallbackInfo ci) {
-        if (InformedLoadUtils.textRenderer == null) {
-            MinecraftClient client = MinecraftClient.getInstance();
-            final FontStorage fontStorage_1 = new FontStorage(client.getTextureManager(), new Identifier("loading"));
-            fontStorage_1.setFonts(Collections.singletonList(FontType.BITMAP.createLoader(new JsonParser().parse(InformedLoadUtils.FONT_JSON).getAsJsonObject()).load(client.getResourceManager())));
-            InformedLoadUtils.textRenderer = new TextRenderer(client.getTextureManager(), fontStorage_1);
-        }
+        InformedLoadUtils.isDoingEarlyLoad = false;
+        MinecraftClient client = MinecraftClient.getInstance();
+        final FontStorage fontStorage_1 = new FontStorage(client.getTextureManager(), new Identifier("loading"));
+        fontStorage_1.setFonts(Collections.singletonList(FontType.BITMAP.createLoader(new JsonParser().parse(InformedLoadUtils.FONT_JSON).getAsJsonObject()).load(client.getResourceManager())));
+        InformedLoadUtils.textRenderer = new TextRenderer(client.getTextureManager(), fontStorage_1);
         InformedLoadUtils.renderProgressBar = (params) -> {
             renderProgressBar((int) params[0], (int) params[1], (int) params[2], (int) params[3], (float) params[4]);
         };

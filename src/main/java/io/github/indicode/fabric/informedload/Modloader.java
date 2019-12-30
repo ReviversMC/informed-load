@@ -103,7 +103,11 @@ public class Modloader {
         renderSubText(subText1, 1);
         GlStateManager.popMatrix();
         glfwSwapBuffers(window.getHandle());
-        glfwPollEvents();
+        try {
+            glfwPollEvents();
+        } catch (NullPointerException ignoreme) {
+            // ok boomer
+        }
         if (GLX._shouldClose(this.window)) {
             client.stop();
         }
@@ -179,6 +183,11 @@ public class Modloader {
                 mainEntrypoints.setText(index.get() + "/" + total.get() + " Common");
                 mainEntrypoints.setProgress((float)(index.get()) / total.get());
                 overall.setProgress((1f/2f) + (((float)(index.get()) / total.get()) / 4f));
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         };
         overall.setText("Creating Render Callbacks");

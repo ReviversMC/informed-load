@@ -1,6 +1,7 @@
 package io.github.indicode.fabric.informedload.mixin;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.indicode.fabric.informedload.Config;
 import io.github.indicode.fabric.informedload.InformedLoadUtils;
 import io.github.indicode.fabric.informedload.Modloader;
@@ -77,6 +78,8 @@ public abstract class MixinMinecraftClient {
 
     @Shadow @Final private static CompletableFuture<Unit> COMPLETED_UNIT_FUTURE;
 
+    @Shadow @Final private ReloadableResourceManager resourceManager;
+
     // Note: this reference works because fabric loader creates it with ASM - do not delete
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/fabricmc/loader/entrypoint/minecraft/hooks/EntrypointClient;start(Ljava/io/File;Ljava/lang/Object;)V", remap = false))
     private void stopFabricInit(File runDir, Object gameInstance) {
@@ -117,19 +120,19 @@ public abstract class MixinMinecraftClient {
             Modloader.getInstance(runDirectory).loadExcludedEntrypoints();
         }
     }
-    //@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/options/GameOptions;addResourcePackProfilesToManager(Lnet/minecraft/resource/ResourcePackManager;)V"))
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;registerListener(Lnet/minecraft/resource/ResourceReloadListener;)V", ordinal = 9))
-    private void moveModload(ReloadableResourceManager reloadableResourceManager, ResourceReloadListener listener) {
-        reloadableResourceManager.registerListener(listener);
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/options/GameOptions;addResourcePackProfilesToManager(Lnet/minecraft/resource/ResourcePackManager;)V"))
+    private void moveModload(GameOptions gameOptions, ResourcePackManager<ClientResourcePackProfile> manager) {
+        gameOptions.addResourcePackProfilesToManager(manager);
         if (InformedLoadUtils.config.entrypointDisplay) {
-            ReloadableResourceManagerImpl resourceManager = (ReloadableResourceManagerImpl) reloadableResourceManager;
+            InformedLoadUtils.isDoingEarlyLoad = true;
+            RenderSystem.setupDefaultState(0, 0, this.window.getFramebufferWidth(), this.window.getFramebufferHeight());
+
+            ReloadableResourceManagerImpl resourceManager = (ReloadableResourceManagerImpl) this.resourceManager;
             resourcePackManager.scanPacks();
             List<ResourcePack> list = resourcePackManager.getEnabledProfiles().stream().map(ResourcePackProfile::createResourcePack).collect(Collectors.toList());
             for (ResourcePack resourcePack_1 : list) {
                 resourceManager.addPack(resourcePack_1);
             }
-            /*List<ResourcePack> list = (List)this.resourcePackManager.getEnabledProfiles().stream().map(ResourcePackProfile::createResourcePack).collect(Collectors.toList());
-            resourceManager.beginMonitoredReload(Util.getServerWorkerExecutor(), (MinecraftClient)(Object)this, COMPLETED_UNIT_FUTURE, list);*/
 
             LanguageManager languageManager = new LanguageManager(this.options.language);
             resourceManager.registerListener(languageManager);
@@ -145,15 +148,15 @@ public abstract class MixinMinecraftClient {
             FontManager fontManager = new FontManager(InformedLoadUtils.textureManager, forcesUnicodeFont());
             resourceManager.registerListener(fontManager.getResourceReloadListener());
 
-            //if (this.options.language != null) {
-               // this.textRenderer.setRightToLeft(languageManager.isRightToLeft());
-            //}
-            //if (InformedLoadUtils.textRenderer == null) {
-                final FontStorage fontStorage_1 = new FontStorage(getTextureManager(), new Identifier("loading"));
-                fontStorage_1.setFonts(Collections.singletonList(FontType.BITMAP.createLoader(new JsonParser().parse(InformedLoadUtils.FONT_JSON).getAsJsonObject()).load(resourceManager)));
-                InformedLoadUtils.textRenderer = new TextRenderer(getTextureManager(), fontStorage_1);
-            //}
+            final FontStorage fontStorage_1 = new FontStorage(InformedLoadUtils.textureManager, new Identifier("loading"));
+            fontStorage_1.setFonts(Collections.singletonList(FontType.BITMAP.createLoader(new JsonParser().parse(InformedLoadUtils.FONT_JSON).getAsJsonObject()).load(resourceManager)));
+            InformedLoadUtils.textRenderer = new TextRenderer(InformedLoadUtils.textureManager, fontStorage_1);
+
             Modloader.getInstance(runDirectory).loadMods(InformedLoadUtils.textureManager, window);
         }
+    }
+    @Inject(method = "getTextureManager", at = @At("HEAD"), cancellable = true)
+    public void changeTextureManager(CallbackInfoReturnable<TextureManager> cir) {
+        if (textureManager == null) cir.setReturnValue(InformedLoadUtils.textureManager);
     }
 }

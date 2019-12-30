@@ -13,7 +13,8 @@
     "MixinTextureManager",
     "MixinWorldGenProgress",
     "MixinWorldGenProgressTracker",
-    "MixinWorldGenProgressLogger"
+    "MixinWorldGenProgressLogger",
+    "RenderPhaseLightmapMixin"
   ],
   "injectors": {
     "defaultRequire": 1
