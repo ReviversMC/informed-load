@@ -22,9 +22,6 @@
 
   "environment": "client",
   "entrypoints": {
-    "modmenu": [
-      "io.github.indicode.fabric.informedload.ModMenuIntegration"
-    ],
     "main": [
       "io.github.indicode.fabric.informedload.InformedLoadUtils"
     ]
