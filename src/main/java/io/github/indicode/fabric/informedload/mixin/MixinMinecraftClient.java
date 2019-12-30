@@ -19,6 +19,7 @@ import net.minecraft.client.font.FontManager;
 import net.minecraft.client.font.FontStorage;
 import net.minecraft.client.font.FontType;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.resource.ClientResourcePackProfile;
 import net.minecraft.client.resource.language.LanguageManager;
@@ -62,6 +63,10 @@ public abstract class MixinMinecraftClient {
     @Shadow @Final public TextRenderer textRenderer;
 
     @Shadow @Final private TextureManager textureManager;
+
+    @Shadow public abstract Framebuffer getFramebuffer();
+
+    @Shadow @Final public static boolean IS_SYSTEM_MAC;
 
     // Note: this reference works because fabric loader creates it with ASM - do not delete
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/fabricmc/loader/entrypoint/minecraft/hooks/EntrypointClient;start(Ljava/io/File;Ljava/lang/Object;)V", remap = false))
@@ -108,8 +113,8 @@ public abstract class MixinMinecraftClient {
         if (InformedLoadUtils.config.entrypointDisplay) {
             ReloadableResourceManagerImpl resourceManager = new ReloadableResourceManagerImpl(ResourceType.CLIENT_RESOURCES, this.thread);
             //this.resourcePackContainerManager.callCreators();
-            manager.scanPacks();
-            List<ResourcePack> list_1 = manager.getEnabledProfiles().stream().map(ResourcePackProfile::createResourcePack).collect(Collectors.toList());
+            resourcePackManager.scanPacks();
+            List<ResourcePack> list_1 = resourcePackManager.getEnabledProfiles().stream().map(ResourcePackProfile::createResourcePack).collect(Collectors.toList());
             for (ResourcePack resourcePack_1 : list_1) {
                 resourceManager.addPack(resourcePack_1);
             }
@@ -118,7 +123,13 @@ public abstract class MixinMinecraftClient {
             resourceManager.registerListener(languageManager);
             languageManager.reloadResources(list_1);
             InformedLoadUtils.textureManager = new TextureManager(resourceManager);
-            //this.onResolutionChanged();
+
+            int i = this.window.calculateScaleFactor(this.options.guiScale, this.forcesUnicodeFont());
+            this.window.setScaleFactor((double)i);
+
+            Framebuffer framebuffer = this.getFramebuffer();
+            framebuffer.resize(this.window.getFramebufferWidth(), this.window.getFramebufferHeight(), IS_SYSTEM_MAC);
+
             FontManager fontManager = new FontManager(InformedLoadUtils.textureManager, forcesUnicodeFont());
             resourceManager.registerListener(fontManager.getResourceReloadListener());
             TextRenderer textRenderer = fontManager.getTextRenderer(DEFAULT_TEXT_RENDERER_ID);
