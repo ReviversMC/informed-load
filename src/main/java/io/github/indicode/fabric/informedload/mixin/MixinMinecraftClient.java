@@ -72,7 +72,7 @@ public abstract class MixinMinecraftClient {
             InformedLoadUtils.config.printEntrypoints = false;
             ((ConfigManager)AutoConfig.getConfigHolder(Config.class)).save();
             //Printing entrypoints
-            System.out.println("[Informed Load] Displaying mod entrypoints:");
+            InformedLoadUtils.LOGGER.info("Displaying mod entrypoints:");
             ArrayList<ModContainer> newArrayList = Lists.newArrayList(FabricLoader.INSTANCE.getAllMods());
             for (int i = 0; i < newArrayList.size(); i++) {
                 net.fabricmc.loader.api.ModContainer modContainer = newArrayList.get(i);
@@ -93,7 +93,7 @@ public abstract class MixinMinecraftClient {
                     }
                 }
             }
-            System.out.println("[Informed Load] Done, Shutting down Minecraft.");
+            InformedLoadUtils.LOGGER.info("Done, Shutting down Minecraft.");
             //End
             System.exit(0);
         }

@@ -44,7 +44,7 @@ public class Modloader {
         this.client = MinecraftClient.getInstance();
     }
     public void loadMods(TextureManager textureManager, Window window) {
-
+        System.out.println("ilm");
         this.window = window;
         this.textureManager = textureManager;
         Thread loaderThread = new Thread(() -> runLoad());
@@ -61,12 +61,12 @@ public class Modloader {
         instancesLoaded = true;
     }
     public void loadExcludedEntrypoints() {
-        System.out.println("[Informed Load] Loading excluded entrypoints: " + InformedLoadUtils.config.excludedEntrypoints);
+        InformedLoadUtils.LOGGER.info("Loading excluded entrypoints: " + InformedLoadUtils.config.excludedEntrypoints);
         if (InformedLoadUtils.config.excludedEntrypoints.isEmpty()) return;
         loadInstances();
         Consumer consumer = it -> {
             if (InformedLoadUtils.config.excludedEntrypoints.contains(it.getClass().getName())) {
-                System.out.println("[Informed Load] Running excluded entrypoint " + it.getClass().getName());
+                InformedLoadUtils.LOGGER.info("Running excluded entrypoint " + it.getClass().getName());
                 if (it instanceof ClientModInitializer) {
                     ((ClientModInitializer) it).onInitializeClient();
                     alreadyLoadedClients.add(it.getClass().getName());
@@ -108,12 +108,15 @@ public class Modloader {
         //InformedLoadUtils.textRenderer.draw(text, window.getScaledWidth() / 2f - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, window.getScaledHeight() - (row + 1) * 20, 0x666666);
     }
     private void runLoad() {
+        System.out.println("in basic load");
         progressBars.clear();
         ProgressBar overall = createProgressBar(0, ProgressBar.SplitType.NONE);
         progressBars.add(overall);
+        InformedLoadUtils.LOGGER.info("Instancing Mods");
         overall.setText("Instancing Mods");
         loadInstances();
         overall.setText("Locating Entrypoints");
+        InformedLoadUtils.LOGGER.info("Locating Entrypoints");
         ProgressBar entrypointBar = createProgressBar(1, ProgressBar.SplitType.NONE);
         entrypointBar.setText("Starting");
         progressBars.add(entrypointBar);
@@ -134,8 +137,10 @@ public class Modloader {
                 }
             }
         }
+        InformedLoadUtils.LOGGER.info("Loading Mods");
         int totalMainEntrypoints = FabricLoader.INSTANCE.getEntrypoints("main", ModInitializer.class).size();
         int totalClientEntrypoints = FabricLoader.INSTANCE.getEntrypoints("client", ClientModInitializer.class).size() - alreadyLoadedClients.size();
+        InformedLoadUtils.LOGGER.info(String.format("Detected %d entrypoints and %d clientside entrypoints", totalMainEntrypoints, totalClientEntrypoints));
         progressBars.remove(entrypointBar);
         ProgressBar mainEntrypoints = createProgressBar(1, ProgressBar.SplitType.LEFT);
         mainEntrypoints.setText(totalMainEntrypoints + " Common");
@@ -158,6 +163,8 @@ public class Modloader {
             }
             subText2 = id;
 
+            InformedLoadUtils.logDebug(String.format("Loading %s(%s): %s (%s)", metadata.getName(), metadata.getId(), id, client ? "Client" : "Main"));
+
             if (client) {
                 ((ClientModInitializer)initializer).onInitializeClient();
                 clientEntrypoints.setText(index.get() + "/" + total.get() + " Client");
@@ -168,6 +175,11 @@ public class Modloader {
                 mainEntrypoints.setText(index.get() + "/" + total.get() + " Common");
                 mainEntrypoints.setProgress((float)(index.get()) / total.get());
                 overall.setProgress((1f/2f) + (((float)(index.get()) / total.get()) / 4f));
+            }
+            try { // TODO: remove
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         };
         overall.setText("Creating Render Callbacks");
@@ -187,6 +199,7 @@ public class Modloader {
         progressBars.remove(clientEntrypoints);
         subText1 = "";
         subText2 = "";
+        InformedLoadUtils.LOGGER.info("Early Modloading Complete. Starting Minecraft...");
         overall.setText("Starting Minecraft");
         overall.setProgress(1);
         keepRendering = false;

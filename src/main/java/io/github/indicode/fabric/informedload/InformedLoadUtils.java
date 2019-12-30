@@ -11,6 +11,11 @@ import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.chunk.ChunkStatus;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.SimpleMessage;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -26,6 +31,27 @@ import static net.minecraft.client.gui.DrawableHelper.fill;
  */
 public class InformedLoadUtils implements ModInitializer {
     public static final String MODID = "informedload";
+    public static final Logger LOGGER = LogManager.getLogger("Informed Load", new MessageFactory() {
+        @Override
+        public Message newMessage(Object message) {
+            return new SimpleMessage("[Informed Load] " + message);
+        }
+
+        @Override
+        public Message newMessage(String message) {
+            return new SimpleMessage("[Informed Load] " + message);
+        }
+
+        @Override
+        public Message newMessage(String message, Object... params) {
+            return new SimpleMessage("[Informed Load] " + message);
+        }
+    });
+    public static void logDebug(String message) {
+        if (config.logDebugs) {
+            InformedLoadUtils.LOGGER.info("[Debug] " + message);
+        }
+    }
     public static TextRenderer textRenderer;
     public static TextureManager textureManager;
     public static final String FONT_JSON = //Taken from loadingspice (https://github.com/therealfarfetchd/loadingspice)

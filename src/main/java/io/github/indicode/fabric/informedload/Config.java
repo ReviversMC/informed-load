@@ -12,6 +12,7 @@ import java.util.List;
  */
 @me.sargunvohra.mcmods.autoconfig1.annotation.Config(name = InformedLoadUtils.MODID)
 public class Config implements ConfigData {
+    public boolean logDebugs = false;
     public static enum SplitType {
         SPLIT, IN_ORDER, SINGLE
     }
