@@ -147,10 +147,4 @@ public abstract class MixinMinecraftClient {
             Modloader.getInstance(runDirectory).loadMods(InformedLoadUtils.textureManager, window);
         }
     }
-    @Inject(method = "getTextureManager", at = @At("HEAD"), cancellable = true)
-    public void getILTextureManager(CallbackInfoReturnable<TextureManager> cir) {
-        //if (textureManager == null) {
-            //cir.setReturnValue(InformedLoadUtils.textureManager);
-        //}
-    }
 }

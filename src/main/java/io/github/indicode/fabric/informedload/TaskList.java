@@ -49,9 +49,9 @@ public class TaskList {
                 super("texstitch", "Stitching Textures");
             }
             public int render(int y, int middle_x, int window_width, int window_height, float fadeAmount) {
-                String name = stage == 0 ? "Preparing" : stage == 1 ? "Extracting Frames" : stage == 2 ? "Mipmapping" : stage == 3 ? "Stitching" : "Loading";
+                String name = stage == 0 ? "Preparing" : stage == 1 ? "Extracting Frames" : stage == 2 ? "Stitching" : "Loading";
                 if (InformedLoadUtils.config.splash_maxProgressBarRows > 2) {
-                    InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, (stage / 5f) + (subPercentage / 5f), (stage + 1) + "/5 - " + extra + name);
+                    InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 + 150, y + 10, (stage / 4f) + (subPercentage / 5f), (stage + 1) + "/5 - " + extra + name);
                 }
                 TaskLoadModels.INSTANCE.stagePercentage = (stage / 5f) + (subPercentage / 5f);
                 return y + 20;
@@ -81,8 +81,8 @@ public class TaskList {
             }
             @Override
             public int render(int y, int middle_x, int window_width, int window_height, float fadeAmount) {
-                if (items > items_o) items = items_o;      // Well do you want people to see 879/877 Items?
-                if (blocks > blocks_o) blocks = blocks_o;  // Hasn't happened yet - but just to make sure
+                if (items > items_o) items = items_o;
+                if (blocks > blocks_o) blocks = blocks_o;
                 if (InformedLoadUtils.config.splash_maxProgressBarRows > 2) {
                     if (InformedLoadUtils.config.splash_splitProgressBars == Config.SplitType.SPLIT) {
                         InformedLoadUtils.makeProgressBar(window_width / 2 - 150, y, window_width / 2 - 5, y + 10, (float) blocks / (float) blocks_o, blocks + "/" + blocks_o + " Blocks Added");
