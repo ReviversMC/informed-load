@@ -180,11 +180,6 @@ public class Modloader {
                 mainEntrypoints.setProgress((float)(index.get()) / total.get());
                 overall.setProgress((1f/2f) + (((float)(index.get()) / total.get()) / 4f));
             }
-            try { // TODO: remove
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         };
         overall.setText("Creating Render Callbacks");
         overall.setProgress(1f/2f);
