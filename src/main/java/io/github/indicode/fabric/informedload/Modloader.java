@@ -167,7 +167,7 @@ public class Modloader {
             }
             subText2 = id;
 
-            InformedLoadUtils.logDebug(String.format("Loading %s(%s): %s (%s)", metadata.getName(), metadata.getId(), id, client ? "Client" : "Main"));
+            InformedLoadUtils.logDebug(metadata == null ? String.format("Loading [UNKNOWN MOD]: %s (%s)", id, client ? "Client" : "Main") : String.format("Loading %s(%s): %s (%s)", metadata.getName(), metadata.getId(), id, client ? "Client" : "Main"));
 
             if (client) {
                 ((ClientModInitializer)initializer).onInitializeClient();
