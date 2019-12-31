@@ -32,6 +32,9 @@ dependencies {
 	include "cloth-config:ClothConfig:${project.cloth_config_version}"
 	modCompile "me.sargunvohra.mcmods:auto-config:${project.auto_config_version}"
 	include "me.sargunvohra.mcmods:auto-config:${project.auto_config_version}"
+
+	modImplementation "com.github.giantnuker:EntrypointCatcher:${project.entrypoint_catcher_version}"
+	include "com.github.giantnuker:EntrypointCatcher:${project.entrypoint_catcher_version}"
 	
 	// not required, but we want to see our config screen
 	//modCompile "io.github.prospector.modmenu:ModMenu:${project.mod_menu_version}"

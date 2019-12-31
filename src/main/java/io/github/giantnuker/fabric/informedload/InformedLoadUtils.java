@@ -104,39 +104,41 @@ public class InformedLoadUtils implements ModInitializer {
     public static Consumer<Object[]> renderProgressBar = null;
     @Override
     public void onInitialize() {
+        STATUS_TO_COLOR = (Object2IntMap) Util.make(new Object2IntOpenHashMap(), (map) -> {
+            map.defaultReturnValue(0);
+            map.put(ChunkStatus.EMPTY, 5526612);
+            map.put(ChunkStatus.STRUCTURE_STARTS, 10066329);
+            map.put(ChunkStatus.STRUCTURE_REFERENCES, 6250897);
+            map.put(ChunkStatus.BIOMES, 8434258);
+            map.put(ChunkStatus.NOISE, 13750737);
+            map.put(ChunkStatus.SURFACE, 7497737);
+            map.put(ChunkStatus.CARVERS, 7169628);
+            map.put(ChunkStatus.LIQUID_CARVERS, 3159410);
+            map.put(ChunkStatus.FEATURES, 2213376);
+            map.put(ChunkStatus.LIGHT, 13421772);
+            map.put(ChunkStatus.SPAWN, 15884384);
+            map.put(ChunkStatus.HEIGHTMAPS, 15658734);
+            map.put(ChunkStatus.FULL, 16777215);
+        });
+        STATUS_TO_NAME = Util.make(new HashMap(), (map) -> {
+            map.put(ChunkStatus.EMPTY, "Empty");
+            map.put(ChunkStatus.STRUCTURE_STARTS, "Structure Starts");
+            map.put(ChunkStatus.STRUCTURE_REFERENCES, "Structure References");
+            map.put(ChunkStatus.BIOMES, "Biomes");
+            map.put(ChunkStatus.NOISE, "Noise");
+            map.put(ChunkStatus.SURFACE, "Surface");
+            map.put(ChunkStatus.CARVERS, "Carvers");
+            map.put(ChunkStatus.LIQUID_CARVERS, "Liquid Carvers");
+            map.put(ChunkStatus.FEATURES, "Features");
+            map.put(ChunkStatus.LIGHT, "Light");
+            map.put(ChunkStatus.SPAWN, "Spawn");
+            map.put(ChunkStatus.HEIGHTMAPS, "Heightmaps");
+            map.put(ChunkStatus.FULL, "Done");
+        });
     }
     public static int spritesToLoad;
-    public static final Object2IntMap<ChunkStatus> STATUS_TO_COLOR = (Object2IntMap) Util.make(new Object2IntOpenHashMap(), (map) -> {
-        map.defaultReturnValue(0);
-        map.put(ChunkStatus.EMPTY, 5526612);
-        map.put(ChunkStatus.STRUCTURE_STARTS, 10066329);
-        map.put(ChunkStatus.STRUCTURE_REFERENCES, 6250897);
-        map.put(ChunkStatus.BIOMES, 8434258);
-        map.put(ChunkStatus.NOISE, 13750737);
-        map.put(ChunkStatus.SURFACE, 7497737);
-        map.put(ChunkStatus.CARVERS, 7169628);
-        map.put(ChunkStatus.LIQUID_CARVERS, 3159410);
-        map.put(ChunkStatus.FEATURES, 2213376);
-        map.put(ChunkStatus.LIGHT, 13421772);
-        map.put(ChunkStatus.SPAWN, 15884384);
-        map.put(ChunkStatus.HEIGHTMAPS, 15658734);
-        map.put(ChunkStatus.FULL, 16777215);
-    });
-    public static final HashMap<ChunkStatus, String> STATUS_TO_NAME = Util.make(new HashMap(), (map) -> {
-        map.put(ChunkStatus.EMPTY, "Empty");
-        map.put(ChunkStatus.STRUCTURE_STARTS, "Structure Starts");
-        map.put(ChunkStatus.STRUCTURE_REFERENCES, "Structure References");
-        map.put(ChunkStatus.BIOMES, "Biomes");
-        map.put(ChunkStatus.NOISE, "Noise");
-        map.put(ChunkStatus.SURFACE, "Surface");
-        map.put(ChunkStatus.CARVERS, "Carvers");
-        map.put(ChunkStatus.LIQUID_CARVERS, "Liquid Carvers");
-        map.put(ChunkStatus.FEATURES, "Features");
-        map.put(ChunkStatus.LIGHT, "Light");
-        map.put(ChunkStatus.SPAWN, "Spawn");
-        map.put(ChunkStatus.HEIGHTMAPS, "Heightmaps");
-        map.put(ChunkStatus.FULL, "Done");
-    });
+    public static Object2IntMap<ChunkStatus> STATUS_TO_COLOR;
+    public static HashMap<ChunkStatus, String> STATUS_TO_NAME;
     public static void drawChunkMap(WorldGenerationProgressTracker worldGenerationProgressTracker_1, int int_1, int int_2, int int_3, int int_4, boolean simplified) {
         int int_5 = int_3 + int_4;
         int int_6 = worldGenerationProgressTracker_1.getCenterSize();
