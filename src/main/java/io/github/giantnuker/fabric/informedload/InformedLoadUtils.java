@@ -86,7 +86,7 @@ public class InformedLoadUtils implements ModInitializer {
         makeProgressBar(x, y, end_x, end_y, progress, text, Color.WHITE.getRGB(), new Color(226, 40, 55).getRGB());
     }
     public static void makeProgressBar(int minX, int minY, int maxX, int maxY, float progress, String text, int outer, int inner) {
-        int percent = MathHelper.ceil(((float)(maxX - minX) * progress) + 1);
+        int percent = MathHelper.ceil(((float)(maxX - minX - 2) * progress) + 1);
 
         fill(minX - 1, minY - 1, maxX + 1, maxY + 1, Color.black.getRGB());
         fill(minX, minY, maxX, maxY, outer);
