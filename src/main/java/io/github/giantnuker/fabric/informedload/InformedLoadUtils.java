@@ -1,17 +1,21 @@
-package io.github.indicode.fabric.informedload;
+package io.github.giantnuker.fabric.informedload;
 
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import me.sargunvohra.mcmods.autoconfig1.AutoConfig;
-import me.sargunvohra.mcmods.autoconfig1.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.FabricLoader;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.WorldGenerationProgressTracker;
-import net.minecraft.util.SystemUtil;
+import net.minecraft.client.texture.TextureManager;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.chunk.ChunkStatus;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.SimpleMessage;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -27,7 +31,30 @@ import static net.minecraft.client.gui.DrawableHelper.fill;
  */
 public class InformedLoadUtils implements ModInitializer {
     public static final String MODID = "informedload";
+    public static final Logger LOGGER = LogManager.getLogger("Informed Load", new MessageFactory() {
+        @Override
+        public Message newMessage(Object message) {
+            return new SimpleMessage("[Informed Load] " + message);
+        }
+
+        @Override
+        public Message newMessage(String message) {
+            return new SimpleMessage("[Informed Load] " + message);
+        }
+
+        @Override
+        public Message newMessage(String message, Object... params) {
+            return new SimpleMessage("[Informed Load] " + message);
+        }
+    });
+    public static boolean isDoingEarlyLoad = false;
+    public static void logDebug(String message) {
+        if (config.logDebugs) {
+            InformedLoadUtils.LOGGER.info("[Debug] " + message);
+        }
+    }
     public static TextRenderer textRenderer;
+    public static TextureManager textureManager;
     public static final String FONT_JSON = //Taken from loadingspice (https://github.com/therealfarfetchd/loadingspice)
             "{\n" +
                     "    \"type\": \"bitmap\",\n" +
@@ -55,26 +82,17 @@ public class InformedLoadUtils implements ModInitializer {
     public static int findMiddle(int a, int b) {
         return (a + b) / 2;
     }
-    public static void makeProgressBar(int x, int y, int end_x, int end_y, float progress, String text, float fadeAmount, boolean vanilla) {
-        if (vanilla || config.splash_forceVanillaProgressBars) {
-            makeProgressBar(x, y, end_x, end_y, progress, text, fadeAmount, Color.WHITE, Color.RED);
-        } else {
-            //Draw with renderProgressBar - why is this not vanilla? Blame mixins...
-            renderProgressBar.accept(new Object[]{x, y, end_x, end_y, progress, fadeAmount});
-        }
-        //Text
-        InformedLoadUtils.textRenderer.draw(text, InformedLoadUtils.findMiddle(x + 1, end_x - 1) - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, y + 1, end_y - y - 2);
+    public static void makeProgressBar(int x, int y, int end_x, int end_y, float progress, String text) {
+        makeProgressBar(x, y, end_x, end_y, progress, text, Color.WHITE.getRGB(), new Color(226, 40, 55).getRGB());
     }
-    public static void makeProgressBar(int x, int y, int end_x, int end_y, float progress, String text, float fadeAmount, Color outer, Color inner) {
-        int percent = MathHelper.ceil((float)(end_x - x - 2) * progress);
-        // Outer bar
-        fill(x - 1, y - 1, end_x + 1, end_y + 1, fadeOut(Color.BLACK, fadeAmount));
-        // White fill
-        fill(x, y, end_x, end_y, outer.getRGB());
-        // Inner progress bar
-        fill(x + 1, y + 1, x + 1 + percent, end_y - 1, fadeOut(inner, fadeAmount));
+    public static void makeProgressBar(int minX, int minY, int maxX, int maxY, float progress, String text, int outer, int inner) {
+        int percent = MathHelper.ceil(((float)(maxX - minX - 2) * progress) + 1);
+
+        fill(minX - 1, minY - 1, maxX + 1, maxY + 1, Color.black.getRGB());
+        fill(minX, minY, maxX, maxY, outer);
+        fill(minX + 1, minY + 1, minX + percent, maxY - 1, inner);
         //Text
-        InformedLoadUtils.textRenderer.draw(text, InformedLoadUtils.findMiddle(x + 1, end_x - 1) - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, y + 1, end_y - y - 2);
+        InformedLoadUtils.textRenderer.draw(text, InformedLoadUtils.findMiddle(minX + 1, maxX - 1) - InformedLoadUtils.textRenderer.getStringWidth(text) / 2f, minY + 1, maxY - minY - 2);
     }
     public static int fadeOut(Color color, float amount) {
         return fadeColor(color, Color.WHITE, amount).getRGB();
@@ -86,67 +104,41 @@ public class InformedLoadUtils implements ModInitializer {
     public static Consumer<Object[]> renderProgressBar = null;
     @Override
     public void onInitialize() {
+        STATUS_TO_COLOR = (Object2IntMap) Util.make(new Object2IntOpenHashMap(), (map) -> {
+            map.defaultReturnValue(0);
+            map.put(ChunkStatus.EMPTY, 5526612);
+            map.put(ChunkStatus.STRUCTURE_STARTS, 10066329);
+            map.put(ChunkStatus.STRUCTURE_REFERENCES, 6250897);
+            map.put(ChunkStatus.BIOMES, 8434258);
+            map.put(ChunkStatus.NOISE, 13750737);
+            map.put(ChunkStatus.SURFACE, 7497737);
+            map.put(ChunkStatus.CARVERS, 7169628);
+            map.put(ChunkStatus.LIQUID_CARVERS, 3159410);
+            map.put(ChunkStatus.FEATURES, 2213376);
+            map.put(ChunkStatus.LIGHT, 13421772);
+            map.put(ChunkStatus.SPAWN, 15884384);
+            map.put(ChunkStatus.HEIGHTMAPS, 15658734);
+            map.put(ChunkStatus.FULL, 16777215);
+        });
+        STATUS_TO_NAME = Util.make(new HashMap(), (map) -> {
+            map.put(ChunkStatus.EMPTY, "Empty");
+            map.put(ChunkStatus.STRUCTURE_STARTS, "Structure Starts");
+            map.put(ChunkStatus.STRUCTURE_REFERENCES, "Structure References");
+            map.put(ChunkStatus.BIOMES, "Biomes");
+            map.put(ChunkStatus.NOISE, "Noise");
+            map.put(ChunkStatus.SURFACE, "Surface");
+            map.put(ChunkStatus.CARVERS, "Carvers");
+            map.put(ChunkStatus.LIQUID_CARVERS, "Liquid Carvers");
+            map.put(ChunkStatus.FEATURES, "Features");
+            map.put(ChunkStatus.LIGHT, "Light");
+            map.put(ChunkStatus.SPAWN, "Spawn");
+            map.put(ChunkStatus.HEIGHTMAPS, "Heightmaps");
+            map.put(ChunkStatus.FULL, "Done");
+        });
     }
     public static int spritesToLoad;
-    private static final Object2IntMap<ChunkStatus> STATUS_TO_COLOR_SIMPLIFIED = (Object2IntMap) SystemUtil.consume(new Object2IntOpenHashMap(), (object2IntOpenHashMap_1) -> {
-        object2IntOpenHashMap_1.defaultReturnValue(0);
-        object2IntOpenHashMap_1.put(ChunkStatus.EMPTY, 0);
-        int color = 75;
-        object2IntOpenHashMap_1.put(ChunkStatus.STRUCTURE_STARTS, getColor(color));
-        object2IntOpenHashMap_1.put(ChunkStatus.STRUCTURE_REFERENCES, getColor(color));
-        color += 5;
-        object2IntOpenHashMap_1.put(ChunkStatus.BIOMES, getColor(color));
-        color += 20;
-        object2IntOpenHashMap_1.put(ChunkStatus.NOISE, getColor(color));
-        color += 25;
-        object2IntOpenHashMap_1.put(ChunkStatus.SURFACE, getColor(color));
-        color += 30;
-        object2IntOpenHashMap_1.put(ChunkStatus.CARVERS, getColor(color));
-        color += 30;
-        object2IntOpenHashMap_1.put(ChunkStatus.LIQUID_CARVERS, getColor(color));
-        color += 20;
-        object2IntOpenHashMap_1.put(ChunkStatus.FEATURES, getColor(color));
-        color += 7;
-        object2IntOpenHashMap_1.put(ChunkStatus.LIGHT, getColor(color));
-        color += 1;
-        object2IntOpenHashMap_1.put(ChunkStatus.SPAWN, getColor(color));
-        object2IntOpenHashMap_1.put(ChunkStatus.HEIGHTMAPS, getColor(color));
-        object2IntOpenHashMap_1.put(ChunkStatus.FULL, new Color(220, 255, 220).getRGB());
-    });
-    private static int getColor(int wh) {
-        return new Color(wh, wh, wh).getRGB();
-    }
-    private static final Object2IntMap<ChunkStatus> STATUS_TO_COLOR = (Object2IntMap)SystemUtil.consume(new Object2IntOpenHashMap(), (object2IntOpenHashMap_1) -> {
-        object2IntOpenHashMap_1.defaultReturnValue(0);
-        object2IntOpenHashMap_1.put(ChunkStatus.EMPTY, 5526612);
-        object2IntOpenHashMap_1.put(ChunkStatus.STRUCTURE_STARTS, 10066329);
-        object2IntOpenHashMap_1.put(ChunkStatus.STRUCTURE_REFERENCES, 6250897);
-        object2IntOpenHashMap_1.put(ChunkStatus.BIOMES, 8434258);
-        object2IntOpenHashMap_1.put(ChunkStatus.NOISE, 13750737);
-        object2IntOpenHashMap_1.put(ChunkStatus.SURFACE, 7497737);
-        object2IntOpenHashMap_1.put(ChunkStatus.CARVERS, 7169628);
-        object2IntOpenHashMap_1.put(ChunkStatus.LIQUID_CARVERS, 3159410);
-        object2IntOpenHashMap_1.put(ChunkStatus.FEATURES, 2213376);
-        object2IntOpenHashMap_1.put(ChunkStatus.LIGHT, 13421772);
-        object2IntOpenHashMap_1.put(ChunkStatus.SPAWN, 15884384);
-        object2IntOpenHashMap_1.put(ChunkStatus.HEIGHTMAPS, 15658734);
-        object2IntOpenHashMap_1.put(ChunkStatus.FULL, 16777215);
-    });
-    public static final HashMap<ChunkStatus, String> STATUS_TO_NAME = SystemUtil.consume(new HashMap(), (map) -> {
-        map.put(ChunkStatus.EMPTY, "Empty");
-        map.put(ChunkStatus.STRUCTURE_STARTS, "Structure Starts");
-        map.put(ChunkStatus.STRUCTURE_REFERENCES, "Structure References");
-        map.put(ChunkStatus.BIOMES, "Biomes");
-        map.put(ChunkStatus.NOISE, "Noise");
-        map.put(ChunkStatus.SURFACE, "Surface");
-        map.put(ChunkStatus.CARVERS, "Carvers");
-        map.put(ChunkStatus.LIQUID_CARVERS, "Liquid Carvers");
-        map.put(ChunkStatus.FEATURES, "Features");
-        map.put(ChunkStatus.LIGHT, "Light");
-        map.put(ChunkStatus.SPAWN, "Spawn");
-        map.put(ChunkStatus.HEIGHTMAPS, "Heightmaps");
-        map.put(ChunkStatus.FULL, "Done");
-    });
+    public static Object2IntMap<ChunkStatus> STATUS_TO_COLOR;
+    public static HashMap<ChunkStatus, String> STATUS_TO_NAME;
     public static void drawChunkMap(WorldGenerationProgressTracker worldGenerationProgressTracker_1, int int_1, int int_2, int int_3, int int_4, boolean simplified) {
         int int_5 = int_3 + int_4;
         int int_6 = worldGenerationProgressTracker_1.getCenterSize();
@@ -169,7 +161,7 @@ public class InformedLoadUtils implements ModInitializer {
                 ChunkStatus chunkStatus_1 = worldGenerationProgressTracker_1.getChunkStatus(int_14, int_15);
                 int int_16 = int_10 + int_14 * int_5;
                 int int_17 = int_11 + int_15 * int_5;
-                fill(int_16, int_17, int_16 + int_3, int_17 + int_3, (simplified ? STATUS_TO_COLOR_SIMPLIFIED : STATUS_TO_COLOR).getInt(chunkStatus_1) | -16777216);
+                fill(int_16, int_17, int_16 + int_3, int_17 + int_3, (STATUS_TO_COLOR).getInt(chunkStatus_1) | -16777216);
             }
         }
 

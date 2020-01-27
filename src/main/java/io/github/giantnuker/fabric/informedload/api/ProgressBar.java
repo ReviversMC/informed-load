@@ -1,6 +1,6 @@
-package io.github.indicode.fabric.informedload.api;
+package io.github.giantnuker.fabric.informedload.api;
 
-import io.github.indicode.fabric.informedload.InformedLoadUtils;
+import io.github.giantnuker.fabric.informedload.InformedLoadUtils;
 import net.minecraft.client.util.Window;
 
 import java.awt.Color;
@@ -33,7 +33,7 @@ public abstract class ProgressBar {
         return progress;
     }
     public void render(Window window) {
-        InformedLoadUtils.makeProgressBar(getX(window), getY(window), getMaxX(window), getY(window) + 10, progress, text, 1, outer, inner);
+        InformedLoadUtils.makeProgressBar(getX(window), getY(window), getMaxX(window), getY(window) + 10, progress, text, outer.getRGB(), inner.getRGB());
     }
     protected abstract int getX(Window window);
     protected abstract int getMaxX(Window window);

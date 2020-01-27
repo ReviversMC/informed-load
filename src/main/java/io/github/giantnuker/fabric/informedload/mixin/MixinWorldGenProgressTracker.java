@@ -1,8 +1,8 @@
-package io.github.indicode.fabric.informedload.mixin; /**
+package io.github.giantnuker.fabric.informedload.mixin; /**
  * @author Indigo A.
  */
 
-import io.github.indicode.fabric.informedload.IProgressTracker;
+import io.github.giantnuker.fabric.informedload.IProgressTracker;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.client.gui.WorldGenerationProgressTracker;
 import net.minecraft.server.WorldGenerationProgressLogger;

@@ -1,11 +1,9 @@
-package io.github.indicode.fabric.informedload.mixin;
+package io.github.giantnuker.fabric.informedload.mixin;
 
-import io.github.indicode.fabric.informedload.TaskList;
+import io.github.giantnuker.fabric.informedload.TaskList;
 import net.minecraft.block.Block;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.render.model.*;
+import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
@@ -45,7 +43,7 @@ public class MixinModelLoader {
 
             while(var4.hasNext()) {
                 Block block_1 = (Block)var4.next();
-                block_1.getStateFactory().getStates().forEach((blockState_1) -> {
+                block_1.getStateManager().getStates().forEach((blockState_1) -> {
                     blocks.getAndIncrement();
                 });
             }
@@ -83,13 +81,13 @@ public class MixinModelLoader {
             if (taskAddModels.items == taskAddModels.items_o && taskAddModels.blocks == taskAddModels.blocks_o) TaskList.removeTask("addmodels");
         //}
     }
-    @Inject(method = "upload(Lnet/minecraft/util/profiler/Profiler;)V", at = @At("HEAD"))
-    private void listProgressUpload(Profiler profiler, CallbackInfo ci) {
+    @Inject(method = "upload", at = @At("HEAD"))
+    private void listProgressUpload(TextureManager textureManager, Profiler profiler, CallbackInfoReturnable<SpriteAtlasManager> cir) {
         taskBakeModels = new TaskList.Task.TaskBakeModels(modelsToBake.size());
         TaskList.addTask(taskBakeModels);
     }
-    @Inject(method = "upload(Lnet/minecraft/util/profiler/Profiler;)V", at = @At("RETURN"))
-    private void removeBakeTask(Profiler profiler, CallbackInfo ci) {
+    @Inject(method = "upload", at = @At("RETURN"))
+    private void removeBakeTask(TextureManager textureManager, Profiler profiler, CallbackInfoReturnable<SpriteAtlasManager> cir) {
         TaskList.removeTask(taskBakeModels.id);
     }
 
